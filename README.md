@@ -1,18 +1,27 @@
+# ISSUE TRACKER 
 
-     ,-----.,--.                  ,--. ,---.   ,--.,------.  ,------.
-    '  .--./|  | ,---. ,--.,--. ,-|  || o   \  |  ||  .-.  \ |  .---'
-    |  |    |  || .-. ||  ||  |' .-. |`..'  |  |  ||  |  \  :|  `--, 
-    '  '--'\|  |' '-' ''  ''  '\ `-' | .'  /   |  ||  '--'  /|  `---.
-     `-----'`--' `---'  `----'  `---'  `--'    `--'`-------' `------'
-    ----------------------------------------------------------------- 
+Issue Tracker is a responsive web application that allows users to create, upvote, pay for, comment on, update, delete and read tickets containing bugs or new feature suggestions.
 
+## Features
 
-Hi there! Welcome to Cloud9 IDE!
+The application has several features:
 
-To get you started, create some files, play with the terminal,
-or visit http://docs.c9.io for our documentation.
-If you want, you can also go watch some training videos at
-http://www.youtube.com/user/c9ide.
+1. Users can browse the existing tickets in the database.
+2. Users can create their own tickets.
+3. Users can edit or delete their existing tickets.
+4. Users can upvote, see the status of and comment on existing tickets.
+5. Users can register and login to their account.
+6. Users must make a payment to create or upvote a new feature ticket.
+7. Users can upvote or create a bug ticket for free.
 
-Happy coding!
-The Cloud9 IDE team
+## Technologies
+
+The application was developed with Django, MYSQL, Python3, HTML5, CSS3, JavaScript, JQuery and Bootstrap.
+
+## Installation
+
+## Testing
+
+## Deployment
+
+The application was deployed to Heroku and can be viewed at: <https://issue-tracker-cian.herokuapp.com/>

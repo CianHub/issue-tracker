@@ -16,7 +16,7 @@ The application has several features:
 
 ## Technologies
 
-The application was developed with Django, MYSQL, Python3, HTML5, CSS3, JavaScript, JQuery and Bootstrap.
+The application was developed with Django, MySQL, Python3, HTML5, CSS3, JavaScript, JQuery and Bootstrap.
 
 ## Installation
 

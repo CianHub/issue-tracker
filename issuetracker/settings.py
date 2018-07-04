@@ -13,6 +13,13 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 import os
 import dj_database_url
 
+# Prevents users seeing errors
+if os.environ.get('DEVELOPMENT'):
+    development = True
+    
+else:
+    development = False
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -24,10 +31,15 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'v)whowc44xybb-i=@_%le2z*@7*-y2amtvt3=*86&r$3-66qj+'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
-ALLOWED_HOSTS = ['issue-tracker-cianog.c9users.io', 'issue-tracker-cian.herokuapp.com']
+#Debug mode is dependent on development variable
+DEBUG = development
 
+ALLOWED_HOSTS = [os.environ.get('C9_HOSTNAME'), os.environ.get('HOSTNAME')]
+
+host = os.environ.get('SITE_HOST')
+if host: 
+    ALLOWED_HOSTS.append(host)
 
 # Application definition
 
@@ -75,14 +87,16 @@ WSGI_APPLICATION = 'issuetracker.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
-"""DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}"""
-
-DATABASES = {'default': dj_database_url.parse("postgres://pvgqcdzxrdqbme:5f79c8ece2f3122b05ef8b6bb56c83e6e157dd3fe6a076de56527d21b88d16a6@ec2-54-228-251-254.eu-west-1.compute.amazonaws.com:5432/ddjatkg28bnui")}
+# Use sqlite in development otherwise use Heroku postgres database
+if development:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+            }
+        }
+else:
+    DATABASES = {'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))}
 
 
 # Password validation

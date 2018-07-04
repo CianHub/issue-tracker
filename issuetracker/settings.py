@@ -26,7 +26,7 @@ SECRET_KEY = 'v)whowc44xybb-i=@_%le2z*@7*-y2amtvt3=*86&r$3-66qj+'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['issue-tracker-cianog.c9users.io', 'https://issue-tracker-cian.herokuapp.com']
+ALLOWED_HOSTS = ['issue-tracker-cianog.c9users.io', 'issue-tracker-cian.herokuapp.com']
 
 
 # Application definition

@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+import dj_database_url
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -37,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'accounts'
 ]
 
 MIDDLEWARE = [
@@ -73,12 +75,14 @@ WSGI_APPLICATION = 'issuetracker.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
-DATABASES = {
+"""DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
-}
+}"""
+
+DATABASES = {'default': dj_database_url.parse("postgres://pvgqcdzxrdqbme:5f79c8ece2f3122b05ef8b6bb56c83e6e157dd3fe6a076de56527d21b88d16a6@ec2-54-228-251-254.eu-west-1.compute.amazonaws.com:5432/ddjatkg28bnui")}
 
 
 # Password validation

@@ -7,6 +7,4 @@ class CustomUser(User):
 
     class Meta:
         proxy = True  
-        
-    def __str__(self):
-        return self.name
+ 

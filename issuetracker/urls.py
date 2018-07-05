@@ -15,13 +15,17 @@ Including another URLconf
 """
 from django.conf.urls import url 
 from django.contrib import admin
-from accounts.views import  user_list, add_user, edit_user
+from accounts.views import  user_list, register, edit_user, index, logout, login, profile
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^$', user_list) ,
-    url(r'add_user$', add_user) ,
-    url(r'^edit/(?P<id>\d+)$', edit_user) , 
+    url(r'^$', index, name='index') ,
+    url(r'user_list$', user_list, name='user_list') ,
+    url(r'register$', register, name='register') ,
+    url(r'edit/(?P<id>\d+)$', edit_user, name='edit_user') ,
+    url(r'logout/$', logout, name="logout") ,
+    url(r'login/$', login, name="login") ,
+    url(r'profile$', profile, name="profile") ,
     
     #(?P<id>\d+) = ?P<id> means its an expression called id, \d+ means the expression is a digit the + means it can be more than 1 digit
     

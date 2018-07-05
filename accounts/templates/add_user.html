@@ -1,16 +1,10 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Register</title>
-    </head>
-    <body>
-        <h1>Register</h1>
-        <form method="POST">
-            {% csrf_token %}
-            
-            {{ form.as_p }}
-            
-            <button type='submit'>Submit</button>
-        </form>
-    </body>
-</html>
+{% extends 'base.html' %} {% block page_title %}Registration {% endblock %} {% block content %}
+<form method="POST">
+    {% csrf_token %} 
+    {{ form.as_p }}
+    <button type='submit'>Submit</button>
+</form>
+<p>Already have an account? <a href="{% url 'login' %}">Sign In
+</a></p>
+
+{% endblock %}

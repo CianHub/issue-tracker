@@ -13,23 +13,13 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import url 
+from django.conf.urls import url, include
 from django.contrib import admin
-from accounts.views import  user_list, register, edit_user, index, logout, login, profile
+from accounts.views import index
+from accounts import urls as accounts_urls
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^$', index, name='index') ,
-    url(r'user_list$', user_list, name='user_list') ,
-    url(r'register$', register, name='register') ,
-    url(r'edit/(?P<id>\d+)$', edit_user, name='edit_user') ,
-    url(r'logout/$', logout, name="logout") ,
-    url(r'login/$', login, name="login") ,
-    url(r'profile$', profile, name="profile") ,
-    
-    #(?P<id>\d+) = ?P<id> means its an expression called id, \d+ means the expression is a digit the + means it can be more than 1 digit
-    
-    
-    #calling the view function, $ signifies the end of the url, basically everything between the last r'^ and ' is what goes at the end of the url e.g. blank is index/homepage as there is nothing added e.g. if theres no ^ as long as the url ends with the text before the $ it will work
-    
+    url(r'^$', index, name="index"),
+    url(r'^accounts/', include(accounts_urls))
 ]

@@ -49,11 +49,11 @@
                             <a class="nav-link js-scroll-trigger" href="{% url 'login' %}">Login</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link js-scroll-trigger" href='register'>Register</a>
+                        <a class="nav-link js-scroll-trigger" href="{% url 'register' %}">Register</a>
                     </li>
                     {% endif %}
                     <li class="nav-item">
-                        <a class="nav-link js-scroll-trigger" <li><a href='user_list'>Users</a></li>
+                        <a class="nav-link js-scroll-trigger" <li><a href="{% url 'user_list' %}">Users</a></li>
                     </li>
                 </ul>
             </div>

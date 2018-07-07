@@ -12,8 +12,12 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 
 import os
 import dj_database_url
+import sys
 
-# Prevents users seeing errors
+# When Tests Are Being Run
+TESTING = len(sys.argv) > 1 and sys.argv[1] == 'test'
+
+# Displays Errors In Development Mode
 if os.environ.get('DEVELOPMENT'):
     development = True
     
@@ -89,16 +93,18 @@ WSGI_APPLICATION = 'issuetracker.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
-# Use sqlite in development otherwise use Heroku postgres database
+# Use sqlite when testing otherwise use Heroku postgres database
 
-"""DATABASES = {
+if TESTING:
+    DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
             }
-        }"""
+        }
 
-DATABASES = {'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))}
+else:
+    DATABASES = {'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))}
 
 
 # Password validation
@@ -136,6 +142,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
+# Static Files Directory
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
@@ -143,12 +150,14 @@ STATICFILES_DIRS = [
 
 MESSAGE_STORAGE = "django.contrib.messages.storage.session.SessionStorage"
 
+# Email Host Settings
 EMAIL_HOST ='smtp.gmail.com'
 EMAIL_HOST_USER=os.environ.get('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD=os.environ.get('EMAIL_HOST_PASSWORD')
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
+# Custom Backends
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'accounts.backends.EmailAuth'

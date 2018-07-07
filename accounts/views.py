@@ -1,5 +1,4 @@
 from django.shortcuts import render, HttpResponse, redirect, get_object_or_404, reverse
-from .models import CustomUser
 from .forms import  EditUserForm, UserLogin, UserRegistrationForm
 from django.contrib.auth.hashers import make_password
 from django.contrib import auth, messages
@@ -11,18 +10,29 @@ from django.contrib.auth.models import User
 # Create your views here.
 
 def index(request):
-    #renders index.html
+    # Renders Home Page
+    
     return render(request, "index.html")
     
 @staff_member_required  
 def user_list(request):
-    results = CustomUser.objects.all()
+    # Renders User Index Page
+    
+    results = User.objects.all()
     return render(request, "user_list.html", {'tests': results})
 
 @login_required
 def edit_user(request, id):
+    # Renders Edit User Page
+    
     user = get_object_or_404(User, pk=id)
     
+    # Prevents User From Editing Another User's Page
+    if user.id != request.user.id:
+        messages.success(request, 'You Do Not Have Permission To View This Page')
+        return redirect(reverse('index'))
+    
+    # Save Changes If Valid
     if request.method =="POST":
         form = EditUserForm(request.POST, instance=user)
         if form.is_valid():
@@ -31,19 +41,25 @@ def edit_user(request, id):
             return redirect(reverse('index'))
     else:
         form = EditUserForm(instance=user)
+        
     return render(request, "edit_user.html", {'form': form})
 
 @login_required
 def logout(request):
-    # Logs user out
+    # Logs User Out
+    
     auth.logout(request)
     messages.success(request, 'You have successfully been logged out!')
     return redirect(reverse('index'))
 
 def login(request):
-    # Return a login page
+    # Log User In
+    
+    # If User Is Logged In
     if request.user.is_authenticated:
         return redirect(reverse('index'))
+    
+    # Logs User If Credentials Match
     if request.method == "POST":
         form = UserLogin(request.POST)
         if form.is_valid():
@@ -60,10 +76,13 @@ def login(request):
     return render(request, 'login.html', {"login_form": form})
 
 def register(request):
-    # Render the registration page
+    # Allows New Users To Register
+    
+    # If User Is Logged In
     if request.user.is_authenticated:
         return redirect(reverse('index'))
 
+    # If User Details Are Valid -> Create New User and Log Them In 
     if request.method == "POST":
         registration_form = UserRegistrationForm(request.POST)
 
@@ -76,17 +95,24 @@ def register(request):
                 auth.login(user=user, request=request)
                 messages.success(request, "You have successfully registered")
                 return redirect(reverse('index'))
+                
             else:
                 messages.error(request, "Unable to register your account at this time")
+                
     else:
         registration_form = UserRegistrationForm()
+        
     return render(request, 'add_user.html', {
         "form": registration_form})
         
 @login_required
 def profile(request):
-    # The users profile page
+    # Displays The Users Profile Page
+    
+    # Generate User Specific Page From Their ID
     user = User.objects.get(id=request.user.id)
-    # Add query to pull and display a users comments and tickets here
+        
+    #------------------------------------------- Add query to pull and display a users comments and tickets here
+    
     return render(request, 'profile.html', {"profile": user})
     

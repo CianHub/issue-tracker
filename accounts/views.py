@@ -1,9 +1,10 @@
 from django.shortcuts import render, HttpResponse, redirect, get_object_or_404, reverse
 from .models import CustomUser
-from .forms import UserForm, EditUserForm, UserLogin, UserRegistrationForm
+from .forms import  EditUserForm, UserLogin, UserRegistrationForm
 from django.contrib.auth.hashers import make_password
 from django.contrib import auth, messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User
 
 
@@ -13,7 +14,7 @@ def index(request):
     #renders index.html
     return render(request, "index.html")
     
-@login_required   
+@staff_member_required  
 def user_list(request):
     results = CustomUser.objects.all()
     return render(request, "user_list.html", {'tests': results})
@@ -23,13 +24,14 @@ def edit_user(request, id):
     user = get_object_or_404(User, pk=id)
     
     if request.method =="POST":
-        form = UserRegistrationForm(request.POST, instance=user)
+        form = EditUserForm(request.POST, instance=user)
         if form.is_valid():
             form.save()
-            return redirect(user_list)
+            messages.success(request, "Your Changes Have Been Saved")
+            return redirect(reverse('index'))
     else:
-        form = UserRegistrationForm(instance=user)
-    return render(request, "add_user.html", {'form': form})
+        form = EditUserForm(instance=user)
+    return render(request, "edit_user.html", {'form': form})
 
 @login_required
 def logout(request):

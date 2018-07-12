@@ -1,0 +1,21 @@
+{% extends 'base.html' %} {% load bootstrap_tags %} {% block page_title %}Create Ticket{% endblock %} {% block content %}
+<div class='container'>
+    <div class='row row-flex'>
+        <div class='col-xs-6 display panel panel-default'>
+            <div class='panel-body'>
+                <div class='product text-center'>
+                    <a href="{% url 'create_ticket_bug' %}" <button type='button' class='btn btn-danger' ><i class="fa fa-exclamation-triangle bug"></i> Create Bug Report</button></a>
+                </div>
+            </div>
+        </div>
+        <div class='col-xs-6  display panel panel-default'>
+            <div class='panel-body'>
+                <div class='product text-center'>
+                   <a href="{% url 'create_ticket_feature' %}" <button class='btn btn-info' type="button"  %}><i class="fa fa-lightbulb feature"></i> Request New Feature </button></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</div>
+{% endblock %}

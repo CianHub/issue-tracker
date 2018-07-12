@@ -1,0 +1,66 @@
+{% load staticfiles %}
+<html>
+
+<head>
+    <title>{% block page_title %}{% endblock %}</title>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}" type="text/css">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+</head>
+
+<body>
+    <div class='container'>
+
+        <nav class="navbar navbar-header" id='main_nav'>
+            
+            <a class="navbar-brand" href="{% url 'index' %}">Issue Tracker</a>
+            <div id='navbar' class='navbar-collapse collapse'>
+                <ul class="nav navbar-nav ">
+                    {% if user.is_authenticated %}
+                    <li><a href="{% url 'ticket_index' %}">View Tickets</a></li>
+                    <li><a href="{% url 'profile' %}">Profile</a></li>
+                    <li><a href="{% url 'logout' %}">Logout</a></li>
+                    <li><a  href="{% url 'create_ticket' %}">Create Ticket</a></li>
+                    
+                    
+
+                    {% else %}
+                    <li><a href="{% url 'login' %}">Login</a></li>
+                    <li><a href="{% url 'register' %}">Register</a></li>
+                    {% endif %} {% if user.is_staff %}
+                    <li><a href="{% url 'user_list' %}">Users</a></li>
+                    {% endif %}
+                    
+                </ul>
+            </div>
+        </nav>
+</div>
+<div class='container'>
+        <div class='row'>
+            <h1>
+                {% block page_heading %}{% endblock %}
+            </h1>
+            {% if messages %}
+            <div>
+                {% for message in messages %} {{ message }} {% endfor %}
+            </div>
+            {% endif %} {% block content %}{% endblock %}
+
+        </div>
+    </div>
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <script type="text/javascript" src="{% static 'js/jquery-3.3.1.js' %}"></script>
+</body>
+
+</html>

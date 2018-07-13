@@ -1,0 +1,44 @@
+{% extends 'base.html' %} {% block page_title %}{{user}}'s Profile{% endblock %} {% block content %}
+
+<h1>{{user}}'s Profile</h1>
+<div class='col-xs-6 profile'>
+    <h4>Username:</h4>
+    <p> {{user.username}} </p>
+    <h4>Name: :</h4>
+    <p>{{user.first_name}} {{user.last_name}}</p>
+    <h4>Email:</h4>
+    <p>{{user.email}}</p>
+    <h4>Last Login:</h4>
+    <p>{{user.last_login}}</p>
+    <h4>Date Joined: </h4>
+    <p>{{user.date_joined}}</p>
+    <form method="GET" action="edit/{{user.id}}"><input class='btn btn-info' type="submit" value="Edit Profile"></form>
+</div>
+<div class='col-xs-6 tickets'>
+    <h2>Tickets:</h4>
+    {% for z in tickets %}
+        <div class='col-xs-12'>
+            <h4>Lasted Edited On {{z.date_updated}}</h4>
+            <p>{{z.title}}</p>
+            <form method="GET" action="view_ticket/{{i.ticket_id}}"><input class='btn btn-success' type="submit" value="View Ticket"></form>
+            <hr>
+
+        </div>
+        {% endfor %}
+
+</div>
+<div class='col-xs-6 comments'>
+    <h2>Comments:</h4>
+        {% for i in comments %}
+        <div class='col-xs-12'>
+            <h4>Lasted Edited On {{i.date_updated}}</h4>
+            <p>{{i.comment}}</p>
+            <form method="GET" action="view_ticket/{{i.ticket_owner_id}}"><input class='btn btn-success' type="submit" value="View Ticket"></form>
+            <hr>
+
+        </div>
+        {% endfor %}
+</div>
+
+
+{% endblock %}

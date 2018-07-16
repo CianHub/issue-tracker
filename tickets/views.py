@@ -1,5 +1,5 @@
 from django.shortcuts import render, HttpResponse, redirect, get_object_or_404, reverse
-from .forms import TicketForm, CommentForm, TicketTypeForm
+from .forms import TicketForm, CommentForm
 from django.contrib.auth.hashers import make_password
 from django.contrib import auth, messages
 from django.contrib.auth.decorators import login_required
@@ -11,17 +11,20 @@ import datetime
 import stripe
 from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-
+import os
 
 @login_required
 def ticket_index(request):
     # Display an index of existing tickets
     
+    # Get logged in user
     user = request.user
+    
+    # Get all tickets in order of latest -> oldest
     ticket_list = Ticket.objects.filter(date_updated__lte=timezone.now()).order_by('-date_updated')
     
+    # Pagination settings
     page = request.GET.get('page', 1)
-
     paginator = Paginator(ticket_list, 10)
     
     try:
@@ -39,35 +42,29 @@ def ticket_index(request):
     
 @login_required
 def view_ticket(request, id):
-    # Display the details a post
+    # Display the tickets information and enable users to upvote or comment on the ticket
     
+    # Gets the selected ticket and companion tickettype object
     ticket = get_object_or_404(Ticket, pk=id)
-    
     ticket_type = TicketType.objects.get(match_ticket_id=id)
     
+    # Gets the comments associated with the ticket and displays them newest -> oldest
     try:
         comments = Comment.objects.filter(ticket=ticket).order_by('-date_updated')
     except:
         comments = "empty"
-
+        
+    # Adds the logged in users username and ticket information automatically before a comment is created
     instance = Comment(username=request.user.username, ticket=ticket, ticket_owner_id=ticket.id)
     
+    # When user posts a comment the ticket is updated
     if request.method == 'POST':
-        
-        if 'upvote' in request.POST:
-            print('upvote')
-        
-        else:
-            form = CommentForm(request.POST, request.FILES, instance=instance)
-        
-            if form.is_valid():
-                ticket.comment_num = (len(comments) +1 )
-                ticket.save()
-                form.save()
-            
-                return redirect(view_ticket, ticket.pk)
-        
-            
+        form = CommentForm(request.POST, request.FILES, instance=instance)
+        if form.is_valid():
+            ticket.comment_num = (len(comments) +1 )
+            ticket.save()
+            form.save()
+            return redirect(view_ticket, ticket.pk)
     else:
         form = CommentForm()
     
@@ -75,31 +72,32 @@ def view_ticket(request, id):
 
 @login_required()
 def create_ticket(request, pk=None):
-    # Allows the user to create a new bug report ticket
+    # Allows the user to create a new ticket
     
+    # The ticket is automatically associated with the logged in user
     instance = Ticket(author=request.user, username=request.user.username, status=1, comment_num=0, upvotes=0)
     
+    # When the create ticket form is submitted it is handled based on it's ticket type
     if request.method == 'POST':
-        
         form = TicketForm(request.POST, request.FILES, instance=instance)
         
         if form.is_valid():
             ticket = form.save(commit=False)
             
+            # If ticket is a bug report
             if ticket.ticket_type == 2:
                 
                 ticket.save()
-    
                 ticket_type = TicketType(ticket=ticket, ticket_type=ticket.ticket_type, match_ticket_id=ticket.id, ticket_title=ticket.title, bug_or_request='bug', value=0)
-                
                 ticket_type.save()
                 
                 return redirect(view_ticket, ticket.pk)
                 
+            # If ticket is a request for a new feature  
             else:
                 
+                # Submitted info is stored in the session 
                 ticket_val = {
-         
                     'title': request.POST['title'],
                     'description': request.POST['description']
                 }
@@ -114,55 +112,82 @@ def create_ticket(request, pk=None):
 
 @login_required
 def pay_for_ticket(request):
+    # Enables the user to make the payment necessary for creating a request feature ticket
 
+    # Gets Stripe secret key
     stripe.api_key = settings.STRIPE_SECRET
     
+    # Gets the submitted values from the create ticket view
     ticket_val = request.session.get('ticket_val')
     
-    if request.method == 'POST':
-        token = request.POST['stripeToken'] 
+    # Behaviour depending on if the app in in development mode or not
+    if os.environ.get('DEVELOPMENT'):
+        server = os.environ.get('C9_HOSTNAME')
+    else:
+        server = os.environ.get('HOSTNAME')
+        
+    # Ensures the page can only be accessed from submitting a valid create ticket form
+    previous_url = request.META.get('HTTP_REFERER')
+    allowed_url = ('https://' + server +  '/tickets/create_ticket/')
+
+    if str(allowed_url) == str(previous_url):
+        
+        # Processes the users payment via Stripe
+        if request.method == 'POST':
+            token = request.POST['stripeToken'] 
     
-        try:
-            customer = stripe.Charge.create(
+            try:
+                customer = stripe.Charge.create(
                 amount=9999,
                 currency='usd',
                 description='New Feature Request',
                 source=token,
                 )
                 
-        except stripe.error.CardError:
-                messages.error(request, "Your card was declined")
+            except stripe.error.CardError:
+                    messages.error(request, "Your card was declined")
                 
-        if customer.paid:
-                ticket = Ticket(author=request.user, username=request.user.username, status=1, comment_num=0, upvotes=0, ticket_type=1, description=ticket_val['description'], title=ticket_val['title'])
-            
-                ticket.save()
+            # If the payment is successful the ticket and associated ticketype are created
+            if customer.paid:
+                    ticket = Ticket(
+                        author=request.user, username=request.user.username, status=1, comment_num=0,
+                        upvotes=0, ticket_type=1, description=ticket_val['description'], title=ticket_val['title']
+                        )
+                    ticket.save()
                 
-                ticket_type = TicketType(ticket=ticket, ticket_type=ticket.ticket_type, match_ticket_id=ticket.id, ticket_title=ticket.title, bug_or_request='feature', value=99.99)
-                ticket_type.save()
+                    ticket_type = TicketType(ticket=ticket, ticket_type=ticket.ticket_type, match_ticket_id=ticket.id, ticket_title=ticket.title, bug_or_request='feature', value=99.99)
+                    ticket_type.save()
                 
-                messages.success(request, "Your Payment Was Successful. Your Feature Request Ticket Has Been Created.")
-                return redirect(view_ticket, ticket.pk)
-
-        else:
-            messages.error(request, "Unable to take payment.")
+                    messages.success(request, "Your Payment Was Successful. Your Feature Request Ticket Has Been Created.")
+                    return redirect(view_ticket, ticket.pk)
+            else:
+                messages.error(request, "Unable to take payment.")
                 
+    # Prevents the page from being accessed if the requirements are not met           
+    else:
+        messages.success(request, 'You Do Not Have Permission To View This Page')
+        return redirect(reverse('index'))
+    
     return render(request, 'ticket_payment.html')
 
 @login_required
 def edit_ticket(request, id):
     # Allows the user to edit a ticket
     
+    # Gets the current ticket
     ticket = get_object_or_404(Ticket, pk=id)
-
+    
+    # Only the user who created the ticket may edit it    
     if ticket.username != request.user.username:
         messages.success(request, 'You Do Not Have Permission To View This Page')
         return redirect(reverse('index'))
         
     if request.method == 'POST':
         
+        # Fills the edit form with information from the ticket
         form = TicketForm(request.POST, instance=ticket)
         
+        # Upon submission the tickets date_updated is updated
         if form.is_valid():
             ticket.date_updated = datetime.datetime.now()
             form.save()
@@ -176,46 +201,87 @@ def edit_ticket(request, id):
     return render(request, 'edit_ticket.html', {'form': form})
 
 @login_required
+def delete_ticket(request, id):
+    # Allows the user to delete the ticket
+    
+    # Gets the current tickety
+    ticket = get_object_or_404(Ticket, pk=id)
+    
+    # Only a ticket with a status of incomplete may be deleted
+    if ticket.status == 1:
+        ticket.delete()
+        return redirect(reverse('index'))
+    elif ticket.status == 2:
+        messages.success(request, 'This ticket cannot be deleted as it is already in progress.')
+        return redirect(reverse('index'))
+    else:
+        messages.success(request, 'This ticket cannot be deleted as it is already complete.')
+        return redirect(reverse('index'))
+        
+@login_required
 def upvote_ticket(request, id):
     # Upvotes the ticket
     
+    # Gets current object and increments upvotes by 1
     ticket = get_object_or_404(Ticket, pk=id)
     ticket.upvotes += 1
     ticket.save()
 
     return redirect(view_ticket, ticket.pk)
-    
+ 
+@login_required   
 def upvote_ticket_request(request, id):
-    # Upvotes the ticket if its a request and is paid for
+    # Enables the user to make the payment for upvoting a feature request ticket
     
+    # Gets the Stripe secret key
     stripe.api_key = settings.STRIPE_SECRET
     
-    ticket = get_object_or_404(Ticket, pk=id)
+    # Behaviour depending on if the app in in development mode or not
+    if os.environ.get('DEVELOPMENT'):
+        server = os.environ.get('C9_HOSTNAME')
+    else:
+        server = os.environ.get('HOSTNAME')
+        
+    # Ensures the page can only be accessed from submitting an upvote from the specified ticket page
+    previous_url = request.META.get('HTTP_REFERER')
+    allowed_url = ('https://' + server + '/' + 'tickets/view_ticket/' + id + '?')
+
+    if str(allowed_url) == str(previous_url):
+        
+        ticket = get_object_or_404(Ticket, pk=id)
     
-    if request.method == 'POST':
-        token = request.POST['stripeToken'] 
+        # Processes the users payment via Stripe    
+        if request.method == 'POST':
+            
+            token = request.POST['stripeToken'] 
     
-        try:
-            customer = stripe.Charge.create(
+            try:
+                customer = stripe.Charge.create(
                 amount=999,
                 currency='usd',
                 description='New feature request - upvote',
                 source=token,
                 )
                 
-        except stripe.error.CardError:
+            except stripe.error.CardError:
                 messages.error(request, "Your card was declined")
                 
-        if customer.paid:
+            # If the payment is successful the ticket is updated
+            if customer.paid:
             
-            ticket.upvotes += 1
-            ticket.save()
+                ticket.upvotes += 1
+                ticket.save()
 
-            messages.success(request, "Your Payment Was Successful. Your upvote has been registered.")
-            return redirect(view_ticket, ticket.pk)
+                messages.success(request, "Your Payment Was Successful. Your upvote has been registered.")
+                return redirect(view_ticket, ticket.pk)
 
-        else:
-            messages.error(request, "Unable to take payment.")
-                
+            else:
+                messages.error(request, "Unable to take payment.")
+      
+    # Prevents the page from being accessed if the requirements are not met   
+    else:
+        messages.success(request, 'You Do Not Have Permission To View This Page')
+        return redirect(reverse('index'))
+        
     return render(request, 'ticket_payment.html')
 

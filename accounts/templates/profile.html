@@ -12,7 +12,7 @@
     <p>{{user.last_login}}</p>
     <h4>Date Joined: </h4>
     <p>{{user.date_joined}}</p>
-    <form method="GET" action="edit/{{user.id}}"><input class='btn btn-info' type="submit" value="Edit Profile"></form>
+    <form method="GET" action="{% url 'edit_user' user.id %}"><input class='btn btn-info' type="submit" value="Edit Profile"></form>
 </div>
 <div class='col-xs-6 tickets'>
     <h2>Most Recent Tickets:</h4>
@@ -20,7 +20,7 @@
         <div class='col-xs-12'>
             <h4>{{z.title}}</h4>
             <p>Lasted Edited On {{z.date_updated}}</p>
-            <form method="GET" action="view_ticket/{{i.ticket_id}}"><input class='btn btn-success' type="submit" value="View Ticket"></form>
+            <form method="GET" action="{% url 'view_ticket' z.id %}"><input class='btn btn-success' type="submit" value="View Ticket"></form>
             <hr>
         </div>
         {% endfor %}
@@ -32,7 +32,7 @@
         <div class='col-xs-12'>
             <h4>{{i.comment}}</h4>
             <p>Lasted Edited On {{i.date_updated}}</p>
-            <form method="GET" action="view_ticket/{{i.ticket_owner_id}}"><input class='btn btn-success' type="submit" value="View Ticket"></form>
+            <form method="GET" action="{% url 'view_ticket' i.ticket_owner_id %}"><input class='btn btn-success' type="submit" value="View Ticket"></form>
             <hr>
 
         </div>

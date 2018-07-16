@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.test.client import Client
 from django.core.urlresolvers import reverse
 from .models import Ticket, TicketType, Comment
+import os
 
 
 class TestViews(TestCase):
@@ -17,6 +18,7 @@ class TestViews(TestCase):
         self.client.login(username='Test', password='123password123')
         
         page = self.client.get("/tickets/ticket_index/")
+        
         self.assertEqual(page.status_code, 200)
         self.assertTemplateUsed(page, "ticket_index.html")
     
@@ -56,6 +58,9 @@ class TestViews(TestCase):
         
         ticket = Ticket(title='test', author=user, username=user.username, description='test', ticket_type=2, status=1, comment_num=0, upvotes=0)
         ticket.save()
+        
+        ticket_type = TicketType(ticket=ticket, ticket_type=ticket.ticket_type, match_ticket_id=ticket.id, ticket_title=ticket.title, bug_or_request='bug', value=0.00)
+        ticket_type.save()
         
         page = self.client.get("/tickets/ticket_index/view_ticket/{0}".format(ticket.id))
         self.assertEqual(page.status_code, 200)
@@ -128,6 +133,110 @@ class TestViews(TestCase):
         page = self.client.get("/tickets/ticket_index/edit_ticket/{0}".format(ticket.id))
         
         self.assertRedirects(page, expected_url=reverse('index'), status_code=302, target_status_code=200, fetch_redirect_response=True)
+        
+    # Ticket Payment Page
     
+    def test_ticket_payment_page(self):
+        #Test that the ticket payment page is using the correct template and is only accessible to logged in users
+         
+        user = User.objects.create_user(username='Test', first_name='test', last_name='tester', password='123password123', email='test@test.com')
+        user.save()
+        self.client.login(username='Test', password='123password123')
+        
+        ticket = Ticket(title='test', author=user, username=user.username, description='test', ticket_type=1, status=1, comment_num=0, upvotes=0)
+        ticket.save()
+        
+        ticket_val = {
+         
+                    'title': ticket.title,
+                    'description': ticket.description
+                }
+                
+        self.client.session['ticket_val'] = ticket_val
+        
+        if os.environ.get('DEVELOPMENT'):
+            server = os.environ.get('C9_HOSTNAME')
+    
+        else:
+            server = os.environ.get('HOSTNAME')
+            
+        response = self.client.get(reverse('pay_for_ticket'), {}, HTTP_REFERER='https://' + server +  '/tickets/create_ticket/')
 
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "ticket_payment.html")
+        
+    def test_ticket_payment_page_from_different_origin(self):
+        #Test that the ticket payment page is only accessible from ticket creation
+         
+        user = User.objects.create_user(username='Test', first_name='test', last_name='tester', password='123password123', email='test@test.com')
+        user.save()
+        self.client.login(username='Test', password='123password123')
+        
+        ticket = Ticket(title='test', author=user, username=user.username, description='test', ticket_type=1, status=1, comment_num=0, upvotes=0)
+        ticket.save()
+        
+        ticket_val = {
+         
+                    'title': ticket.title,
+                    'description': ticket.description
+                }
+                
+        self.client.session['ticket_val'] = ticket_val
+        
+        if os.environ.get('DEVELOPMENT'):
+            server = os.environ.get('C9_HOSTNAME')
     
+        else:
+            server = os.environ.get('HOSTNAME')
+            
+        response = self.client.get(reverse('pay_for_ticket'), {}, HTTP_REFERER='https://' + server)
+
+        self.assertEqual(response.status_code, 302)
+    
+    # Ticket Upvote Payment Page
+    
+    def test_upvote_ticket_payment_page(self):
+        #Test that the upvote ticket payment page is using the correct template and is only accessible to logged in users
+         
+        user = User.objects.create_user(username='Test', first_name='test', last_name='tester', password='123password123', email='test@test.com')
+        user.save()
+        self.client.login(username='Test', password='123password123')
+        
+        ticket = Ticket(title='test', author=user, username=user.username, description='test', ticket_type=1, status=1, comment_num=0, upvotes=0)
+        ticket.save()
+        
+        ticket_type = TicketType(ticket=ticket, ticket_type=ticket.ticket_type, match_ticket_id=ticket.id, ticket_title=ticket.title, bug_or_request='bug', value=0.00)
+        ticket_type.save()
+        
+        
+        if os.environ.get('DEVELOPMENT'):
+            server = os.environ.get('C9_HOSTNAME')
+    
+        else:
+            server = os.environ.get('HOSTNAME')
+            
+        response = self.client.get("/tickets/view_ticket/{0}?".format(ticket.id), HTTP_REFERER='https://' + server + '/' + 'tickets/view_ticket/upvote_ticket_request/1?' )
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_upvote_ticket_payment_page_from_different_origin(self):
+        #Test that the upvote ticket payment page is only accessible from ticket creation
+         
+        user = User.objects.create_user(username='Test', first_name='test', last_name='tester', password='123password123', email='test@test.com')
+        user.save()
+
+        ticket = Ticket(title='test', author=user, username=user.username, description='test', ticket_type=1, status=1, comment_num=0, upvotes=0)
+        ticket.save()
+        
+        ticket_type = TicketType(ticket=ticket, ticket_type=ticket.ticket_type, match_ticket_id=ticket.id, ticket_title=ticket.title, bug_or_request='bug', value=0.00)
+        ticket_type.save()
+        
+        if os.environ.get('DEVELOPMENT'):
+            server = os.environ.get('C9_HOSTNAME')
+    
+        else:
+            server = os.environ.get('HOSTNAME')
+        
+        response = self.client.get("/tickets/view_ticket/upvote_ticket_request/{0}?".format(ticket.id))
+        
+        self.assertRedirects(response, expected_url='/accounts/login/?next=/tickets/view_ticket/upvote_ticket_request/1', status_code=302, target_status_code=200, fetch_redirect_response=True)

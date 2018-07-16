@@ -26,13 +26,14 @@ class TestModels(TestCase):
         ticket = Ticket(title='test', author=user, username=user.username, description='test', ticket_type=2, status=1, comment_num=0, upvotes=0)
         ticket.save()
         
-        ticket_type = TicketType(ticket=ticket, ticket_type=ticket.ticket_type, match_ticket_id=ticket.id, ticket_title=ticket.title, bug_or_request='bug')
-        ticket_type_saved = ticket_type.save()
+        ticket_type = TicketType(ticket=ticket, ticket_type=ticket.ticket_type, match_ticket_id=ticket.id, ticket_title=ticket.title, bug_or_request='bug', value=0.00)
+        ticket_type.save()
         
         self.assertEqual(ticket_type.ticket_type,2)
         self.assertEqual(ticket_type.ticket, ticket)
         
     def test_create_comment(self):
+        # Test if a new comment can be created
          
          user = User.objects.create_user(username='Test', first_name='test', last_name='tester', password='123password123', email='test@test.com')
          user.save()

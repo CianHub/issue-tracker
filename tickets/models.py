@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 class Ticket(models.Model):
-    # A Ticket 
+    # The model for a ticket 
     
     STATUS_CHOICES = (
     (1, "Incomplete"),
@@ -46,7 +46,7 @@ class TicketType(models.Model):
         return self.ticket_title
         
 class Comment(models.Model):
-    # A comment 
+    # The model for a comment 
     
     comment = models.TextField()
     username = models.CharField(max_length=200)

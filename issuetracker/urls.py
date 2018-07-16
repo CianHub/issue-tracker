@@ -18,6 +18,7 @@ from django.contrib import admin
 from accounts.views import index
 from accounts import urls as accounts_urls
 from tickets import urls as tickets_urls
+from payment import urls as payment_urls
 from django.views.static import serve
 from .settings import MEDIA_ROOT
 
@@ -26,6 +27,7 @@ urlpatterns = [
     url(r'^$', index, name="index"),
     url(r'^accounts/', include(accounts_urls)),
     url(r'^tickets/', include(tickets_urls)),
+    url(r'^payment/', include(payment_urls)),
     url(r'^media/(?P<path>.*)$', serve, {'document_root': MEDIA_ROOT }),
 
     

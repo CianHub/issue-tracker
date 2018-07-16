@@ -9,15 +9,11 @@
     <p> {{ticket.author}} </p>
     <h3>Description :</h3>
     <p>{{ticket.description}}</p>
-    <h3>Date Created</h3 <p>{{ticket.date_created}}</p>
+    <h3>Date Created:</h3 <p>{{ticket.date_created}}</p>
 
 </div>
 <div class='col-xs-12 profile'>
-
-    {% if ticket.image %}
-    <h3>Attached Image :</h3>
-    <p><img src='{{STATIC_URL}}{{ticket.image}}'></p>
-    {% endif %}
+    
     <h3>Last Updated: </h3>
     <p>{{ticket.date_updated}}</p>
 
@@ -32,9 +28,16 @@
         <p><i class="fa fa-thumbs-up upvotes"></i> {{ ticket.upvotes }} <i class="fa fa-comment comments"></i> {{ comments | length}}</p>
     
         <hr>
+        
+        {% if ticket.ticket_type == 2 %}
         <form method="GET" action="upvote_ticket/{{ticket.id}}" name='upvote'>
             <button class='btn btn-success' type="submit"><i class="fa fa-thumbs-up"></i></button>
         </form>
+        {% else %}
+        <form method="GET" action="upvote_ticket_request/{{ticket.id}}" name='upvote'>
+            <button class='btn btn-success' type="submit"><i class="fa fa-thumbs-down"></i></button>
+        </form>
+        {% endif %}
 
     </div>
     

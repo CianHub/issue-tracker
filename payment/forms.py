@@ -15,5 +15,5 @@ class MakePaymentForm(forms.Form):
 class PaymentInfoForm(forms.ModelForm):
     class Meta:
         model = PaymentInfo
-        fields = ('full_name', 'phone_number', 'country', 'postcode', 'city', 'street_address1', 'street_address2', 'county')
+        fields = ('full_name','phone_number','street_address1', 'street_address2', 'city','county', 'country', 'postcode', )
 

@@ -17,30 +17,30 @@
 
             </tr>
         </thead>
-        <tbody>{% for item in tickets %}
+        <tbody>{% for ticket in tickets %}
             <tr>
                 <td>
-                    {{ item.title}}
+                    {{ ticket.title}}
                 </td>
                 <td>
-                    {{ item.author }}
+                    {{ ticket.author }}
                 </td>
                 <td>
-                    <i class="fa fa-comment comment"></i> {{ item.comment_num }}
+                    <i class="fa fa-comment comment"></i> {{ ticket.comment_num }}
                 </td>
                 <td>
-                    <i class="fa fa-thumbs-up upvotes"></i> {{ item.upvotes }}
+                    <i class="fa fa-thumbs-up upvotes"></i> {{ ticket.upvotes }}
                 </td>
                 <td>
-                    {{ item.status }}
+                    {{ ticket.status }}
                 </td>
                 <td>
-                    {{ item.date_created }}
+                    {{ ticket.date_created }}
                 </td>
                 <td>
-                    {{ item.date_updated }}
+                    {{ ticket.date_updated }}
                 </td>
-                {% if item.ticket_type == 2%}
+                {% if ticket.ticket_type == 2%}
                 <td>
                     <i class="fa fa-exclamation-triangle bug"></i>
 
@@ -51,13 +51,14 @@
 
 
                 </td>
-                {% endif %} {% if user.username == item.username %}
+                
+                {% endif %} {% if user.username == ticket.username %}
                 <td>
-                    <form method="GET" action="edit_ticket/{{item.id}}"><input class='btn btn-info' type="submit" value="Edit Ticket"></form>
+                    <form method="GET" action="edit_ticket/{{ticket.id}}"><input class='btn btn-info' type="submit" value="Edit Ticket"></form>
                 </td>
                 {% endif %}
                 <td>
-                    <form method="GET" action="view_ticket/{{item.id}}"><input class='btn btn-success' type="submit" value="View Ticket"></form>
+                    <form method="GET" action="view_ticket/{{ticket.id}}"><input class='btn btn-success' type="submit" value="View Ticket"></form>
                 </td>
             </tr>
         </tbody>
@@ -67,6 +68,22 @@
         {% endfor %}
     </table>
 </div>
+{% if tickets.has_other_pages %}
+<ul class="pagination">
+    {% if tickets.has_previous %}
+    <li><a href="?page={{ tickets.previous_page_number }}">&laquo;</a></li>
+    {% else %}
+    <li class="disabled"><span>&laquo;</span></li>
+    {% endif %} {% for i in tickets.paginator.page_range %} {% if tickets.number == i %}
+    <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span>
+    </li>
+    {% else %}
+    <li><a href="?page={{ i }}">{{ i }}</a></li>
+    {% endif %} {% endfor %} {% if tickets.has_next %}
+    <li><a href="?page={{ tickets.next_page_number }}">&raquo;</a></li>
+    {% else %}
+    <li class="disabled"><span>&raquo;</span></li>
+    {% endif %}
+</ul>
 
-
-{% endblock %}
+{% endif %}{% endblock %}

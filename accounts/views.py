@@ -6,6 +6,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User
 from tickets.models import Ticket, TicketType, Comment
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 
 
 # Create your views here.
@@ -20,7 +22,20 @@ def user_list(request):
     # Renders User Index Page
     
     results = User.objects.all()
-    return render(request, "user_list.html", {'tests': results})
+    page = request.GET.get('page', 1)
+
+    paginator = Paginator(results, 10)
+    
+    try:
+        users = paginator.page(page)
+        
+    except PageNotAnInteger:
+        
+        users = paginator.page(1)
+    except EmptyPage:
+        users = paginator.page(paginator.num_pages)
+
+    return render(request, "user_list.html", {'tests': results, 'users': users })
 
 @login_required
 def edit_user(request, id):
@@ -114,12 +129,12 @@ def profile(request):
     user = User.objects.get(id=request.user.id)
     
     try:
-        comments = Comment.objects.filter(username=request.user.username).order_by('-date_updated')
+        comments = Comment.objects.filter(username=request.user.username).order_by('-date_updated')[:3]
     except:
         comments = "empty"
     
     try:
-        tickets = Ticket.objects.filter(username=request.user.username).order_by('-date_updated')
+        tickets = Ticket.objects.filter(username=request.user.username).order_by('-date_updated')[:3]
     except:
         comments = "empty"
         

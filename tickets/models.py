@@ -27,8 +27,7 @@ class Ticket(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(blank=True, null=True, default=timezone.now)
     ticket_type = models.IntegerField(choices=TICKET_CHOICES)
-    image = models.ImageField(upload_to='img', blank=True, null=True)
-    
+
     def __str__(self):
         return self.title
 
@@ -39,7 +38,7 @@ class TicketType(models.Model):
      ticket_type = models.IntegerField()
      match_ticket_id = models.IntegerField()
      ticket_title = models.CharField(max_length=200)
-     value = models.DecimalField(default=0, max_digits=9, decimal_places=2)
+     value = models.DecimalField(max_digits=9, decimal_places=2)
      bug_or_request = models.CharField(max_length=7, default='bug')
 
     

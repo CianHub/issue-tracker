@@ -1,7 +1,6 @@
 from django.db import models
 from tickets.models import Ticket, TicketType
 from accounts.models import User
-from django.utils import timezone
 
 class PaymentInfo(models.Model):
     user = models.ForeignKey(User)

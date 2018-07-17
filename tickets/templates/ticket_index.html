@@ -1,71 +1,104 @@
 {% extends 'base.html' %} 
 {% block page_title %}Users {% endblock %} 
 {% block content %}
-    <h1> Tickets </h1>
-        <div class='col-xs-12'>
-            <table class='table'>
-                <thead>
-                    <tr>
-                        <th scope="col">Title</th>
-                        <th scope="col">Author</th>
-                        <th scope="col">Comments</th>
-                        <th scope="col">Upvotes</th>
-                        <th scope="col">Date Created</th>
-                        <th scope="col">Last Updated</th>
-                        <th scope="col">Type</th>
-                        <th scope="col"></th>
-                        <th scope="col"></th>
-                       
-                    </tr>
-                </thead>
-                <tbody>{% for item in tickets %}
-                <tr>
-                    <td>
-                        {{ item.title}}
-                    </td>
-                    <td>
-                        {{ item.author }}
-                    </td>
-                    <td>
-                        <i class="fa fa-comment comment"></i> {{ item.comment_num }}
-                    </td>
-                    <td>
-                        <i class="fa fa-thumbs-up upvotes"></i> {{ item.upvotes }}
-                    </td>
-                    <td>
-                        {{ item.date_created }}
-                    </td>
-                    <td>
-                        {{ item.date_updated }}
-                    </td>
-                    {% if item.ticket_type == 2%}
-                    <td>
-                        <i class="fa fa-exclamation-triangle bug"></i>
-
-                    </td>
-                    {% else %}
-                    <td>
-                        <i class="fa fa-lightbulb feature"></i>
-
-
-                    </td>
-                    {% endif %}
-                    {% if user.username == item.username %}
-                    <td>
-                        <form method="GET" action="edit_ticket/{{item.id}}"><input class='btn btn-info' type="submit" value="Edit Ticket"></form>
-                    </td>
-                    {% endif %}
-                    <td>
-                        <form method="GET" action="view_ticket/{{item.id}}"><input class='btn btn-success' type="submit" value="View Ticket"></form>
-                    </td>
-                </tr>
-                </tbody>
-                
-                {% empty %}
-                <p>Empty</p>
-                {% endfor %}
-            </table>
-        </div>
- 
-
+<h1> Tickets </h1>
+<div class='col-xs-12'>
+    <table class='table'>
+        <thead>
+            <tr>
+                <th scope="col">Title</th>
+                <th scope="col">Author</th>
+                <th scope="col">Comments</th>
+                <th scope="col">Upvotes</th>
+                <th scope="col">Status</th>
+                <th scope="col">Date Created</th>
+                <th scope="col">Last Updated</th>
+                <th scope="col">Type</th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>{% for ticket in tickets %}
+            <tr>
+                <td>
+                    {{ ticket.title}}
+                </td>
+                <td>
+                    {{ ticket.author }}
+                </td>
+                <td>
+                    <i class="fa fa-comment comment"></i> {{ ticket.comment_num }}
+                </td>
+                <td>
+                    <i class="fa fa-thumbs-up upvotes"></i> {{ ticket.upvotes }}
+                </td>
+                {% if ticket.status == 1 %}
+                <td>
+                    Incomplete
+                </td>
+                {% elif ticket.status == 2 %}
+                <td>
+                    In Progress
+                </td>
+                {% else %}
+                <td>
+                    Complete
+                </td>
+                {% endif %}
+                <td>
+                    {{ ticket.date_created }}
+                </td>
+                <td>
+                    {{ ticket.date_updated }}
+                </td>
+                {% if ticket.ticket_type == 2%}
+                <td>
+                    <i class="fa fa-bug bug"></i>
+                </td>
+                {% else %}
+                <td>
+                    <i class="fa fa-lightbulb"></i>
+                </td>
+                {% endif %} 
+                <td>
+                    <form method="GET" action="{% url 'view_ticket' ticket.id %}"><input class='btn btn-success' type="submit" value="View Ticket"></form>
+                </td>
+                {% if user.username == ticket.username %}
+                <td>
+                    <form method="GET" action="{% url 'edit_ticket' ticket.id %}"><input class='btn btn-info' type="submit" value="Edit Ticket"></form>
+                </td>
+                <td>
+                    <form method="GET" action="{% url 'delete_ticket' ticket.id %}"><input class='btn btn-danger' type="submit" value="Delete Ticket"></form>
+                </td>
+                {% endif %}
+            </tr>
+        </tbody>
+        {% empty %}
+        <p>Empty</p>
+        {% endfor %}
+    </table>
+</div>
+{% if tickets.has_other_pages %}
+<ul class="pagination">
+    {% if tickets.has_previous %}
+    <li><a href="?page={{ tickets.previous_page_number }}">&laquo;</a></li>
+    {% else %}
+    <li class="disabled"><span>&laquo;</span></li>
+    {% endif %} 
+    {% for i in tickets.paginator.page_range %} 
+    {% if tickets.number == i %}
+    <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span>
+    </li>
+    {% else %}
+    <li><a href="?page={{ i }}">{{ i }}</a></li>
+    {% endif %} 
+    {% endfor %} 
+    {% if tickets.has_next %}
+    <li><a href="?page={{ tickets.next_page_number }}">&raquo;</a></li>
+    {% else %}
+    <li class="disabled"><span>&raquo;</span></li>
+    {% endif %}
+</ul>
+{% endif %}
 {% endblock %}

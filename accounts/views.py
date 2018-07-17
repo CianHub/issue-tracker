@@ -6,9 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User
 from tickets.models import Ticket, TicketType, Comment
-
-
-# Create your views here.
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 def index(request):
     # Renders Home Page
@@ -17,23 +15,39 @@ def index(request):
     
 @staff_member_required  
 def user_list(request):
-    # Renders User Index Page
+    # Renders the user index page
     
+    # Gets all users
     results = User.objects.all()
-    return render(request, "user_list.html", {'tests': results})
+    
+    # Pagination settings
+    page = request.GET.get('page', 1)
+    paginator = Paginator(results, 10)
+    
+    try:
+        users = paginator.page(page)
+        
+    except PageNotAnInteger:
+        
+        users = paginator.page(1)
+    except EmptyPage:
+        users = paginator.page(paginator.num_pages)
+
+    return render(request, "user_list.html", {'tests': results, 'users': users })
 
 @login_required
 def edit_user(request, id):
     # Renders Edit User Page
     
+    # Gets the current user
     user = get_object_or_404(User, pk=id)
     
-    # Prevents User From Editing Another User's Page
+    # Prevents a user from editing another users oage
     if user.id != request.user.id:
         messages.success(request, 'You Do Not Have Permission To View This Page')
         return redirect(reverse('index'))
     
-    # Save Changes If Valid
+    # On form submission
     if request.method =="POST":
         form = EditUserForm(request.POST, instance=user)
         if form.is_valid():
@@ -47,20 +61,20 @@ def edit_user(request, id):
 
 @login_required
 def logout(request):
-    # Logs User Out
+    # Logs the user out
     
     auth.logout(request)
     messages.success(request, 'You have successfully been logged out!')
     return redirect(reverse('index'))
 
 def login(request):
-    # Log User In
+    # Logs the user in
     
-    # If User Is Logged In
+    # If the user is logged in
     if request.user.is_authenticated:
         return redirect(reverse('index'))
     
-    # Logs User If Credentials Match
+    # If login credentials are valid
     if request.method == "POST":
         form = UserLogin(request.POST)
         if form.is_valid():
@@ -77,13 +91,13 @@ def login(request):
     return render(request, 'login.html', {"login_form": form})
 
 def register(request):
-    # Allows New Users To Register
+    # Allows new users to register
     
-    # If User Is Logged In
+    # If user is logged in
     if request.user.is_authenticated:
         return redirect(reverse('index'))
 
-    # If User Details Are Valid -> Create New User and Log Them In 
+    # Creates the new user and logs them in
     if request.method == "POST":
         registration_form = UserRegistrationForm(request.POST)
 
@@ -108,20 +122,20 @@ def register(request):
         
 @login_required
 def profile(request):
-    # Displays The Users Profile Page
+    # Displays the users profile page
     
-    # Generate User Specific Page From Their ID
+    # Gets the logged in user
     user = User.objects.get(id=request.user.id)
     
+    # Gets the tickets and comments created by the logged in user
     try:
-        comments = Comment.objects.filter(username=request.user.username).order_by('-date_updated')
+        comments = Comment.objects.filter(username=request.user.username).order_by('-date_updated')[:3]
     except:
         comments = "empty"
     
     try:
-        tickets = Ticket.objects.filter(username=request.user.username).order_by('-date_updated')
+        tickets = Ticket.objects.filter(username=request.user.username).order_by('-date_updated')[:3]
     except:
-        comments = "empty"
+        tickets = "empty"
         
     return render(request, 'profile.html', {"profile": user, 'comments':comments, 'tickets':tickets})
-    

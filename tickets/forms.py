@@ -5,12 +5,14 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone
 
 class TicketForm(forms.ModelForm):
+    # A form for creating a ticket
     
     class Meta:
         model = Ticket
-        fields = ('title', 'description', 'image')
+        fields = ('title', 'description', 'ticket_type')
 
 class CommentForm(forms.ModelForm):
+    # A form for creating a comment
     
     class Meta:
         model = Comment

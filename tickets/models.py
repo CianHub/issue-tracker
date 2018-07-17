@@ -4,12 +4,17 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 class Ticket(models.Model):
-    # A Ticket 
+    # The model for a ticket 
     
     STATUS_CHOICES = (
     (1, "Incomplete"),
     (2, "In Progress"),
     (3, "Complete")
+    )
+    
+    TICKET_CHOICES = (
+    (1, "Request New Feature - $99.99"),
+    (2, "Report Bug - Free")
     )
 
     title = models.CharField(max_length=200)
@@ -21,9 +26,8 @@ class Ticket(models.Model):
     status = models.IntegerField(choices=STATUS_CHOICES, default=1)
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(blank=True, null=True, default=timezone.now)
-    ticket_type = models.IntegerField()
-    image = models.ImageField(upload_to='img', blank=True, null=True)
-    
+    ticket_type = models.IntegerField(choices=TICKET_CHOICES)
+
     def __str__(self):
         return self.title
 
@@ -34,7 +38,7 @@ class TicketType(models.Model):
      ticket_type = models.IntegerField()
      match_ticket_id = models.IntegerField()
      ticket_title = models.CharField(max_length=200)
-     value = models.DecimalField(default=0, max_digits=9, decimal_places=2)
+     value = models.DecimalField(max_digits=9, decimal_places=2)
      bug_or_request = models.CharField(max_length=7, default='bug')
 
     
@@ -42,7 +46,7 @@ class TicketType(models.Model):
         return self.ticket_title
         
 class Comment(models.Model):
-    # A comment 
+    # The model for a comment 
     
     comment = models.TextField()
     username = models.CharField(max_length=200)

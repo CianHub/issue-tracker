@@ -1,43 +1,40 @@
-{% extends 'base.html' %}{% load bootstrap_tags %} {% load static %} {% block page_title %}Users {% endblock %} {% block content %}
+{% extends 'base.html' %}
+{% load bootstrap_tags %}
+{% load static %}
+{% block page_title %}Users {% endblock %} 
+{% block content %}
 <h1>{{ticket.title }} </h1>
 <hr>
 <div class='col-xs-12 profile'>
     {% if user.username == ticket.username %}
-    <form method="GET" action="edit_ticket/{{ticket.id}}" name='edit'><input class='btn btn-info' type="submit" value="Edit"></form>
+    <form method="GET" action="{% url 'edit_ticket' ticket.id %}" name='edit'><input class='btn btn-info' type="submit" value="Edit"></form>
     {% endif %}
     <h3>Author:</h3>
     <p> {{ticket.author}} </p>
     <h3>Description :</h3>
     <p>{{ticket.description}}</p>
-    <h3>Date Created</h3 <p>{{ticket.date_created}}</p>
-
+    <h3>Date Created:</h3 <p>{{ticket.date_created}}</p>
 </div>
 <div class='col-xs-12 profile'>
-
-    {% if ticket.image %}
-    <h3>Attached Image :</h3>
-    <p><img src='{{STATIC_URL}}{{ticket.image}}'></p>
-    {% endif %}
+    
     <h3>Last Updated: </h3>
     <p>{{ticket.date_updated}}</p>
 
 </div>
 <div class='col-xs-12'>
-    <br>
-
-</div>
-
-<div class='col-xs-12'>
     <div class='form-row'>
         <p><i class="fa fa-thumbs-up upvotes"></i> {{ ticket.upvotes }} <i class="fa fa-comment comments"></i> {{ comments | length}}</p>
-    
         <hr>
-        <form method="GET" action="upvote_ticket/{{ticket.id}}" name='upvote'>
+        {% if ticket.ticket_type == 2 %}
+        <form method="GET" action="{% url 'upvote_ticket' ticket.id %}" name='upvote'>
             <button class='btn btn-success' type="submit"><i class="fa fa-thumbs-up"></i></button>
         </form>
-
+        {% else %}
+        <form method="GET" action="{% url 'upvote_ticket' ticket.id %}" name='upvote'>
+            <button class='btn btn-success' type="submit"><i class="fa fa-thumbs-up"></i></button>
+        </form>
+        {% endif %}
     </div>
-    
 </div>
 
 <div class='col-xs-12'>
@@ -46,17 +43,19 @@
 </div>
 <div class='col-xs-12'>
     <form method="POST">
-        {% csrf_token %} {{ form | as_bootstrap }}
+        {% csrf_token %} 
+        {{ form | as_bootstrap }}
         <button type="submit" class="btn btn-info">Post Comment</button>
     </form>
     <hr>
 </div>
-<hr> {% for i in comments %}
+<hr> 
+{% for i in comments %}
 <div class='col-xs-12'>
     <h4>Posted by {{i.username}} on {{i.date_created}}</h4>
-    <p>{{i.comment}}
-        <p>
-            <small class='text-muted'>Lasted Edited On {{i.date_updated}}</small>
-            <hr>
+    <p>{{i.comment}}</p>
+    <small class='text-muted'>Lasted Edited On {{i.date_updated}}</small>
+    <hr>
 </div>
-{% endfor %} {% endblock %}
+{% endfor %}
+{% endblock %}

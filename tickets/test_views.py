@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.test.client import Client
 from django.core.urlresolvers import reverse
 from .models import Ticket, TicketType, Comment
+import os
 
 
 class TestViews(TestCase):
@@ -17,6 +18,7 @@ class TestViews(TestCase):
         self.client.login(username='Test', password='123password123')
         
         page = self.client.get("/tickets/ticket_index/")
+        
         self.assertEqual(page.status_code, 200)
         self.assertTemplateUsed(page, "ticket_index.html")
     
@@ -27,62 +29,23 @@ class TestViews(TestCase):
         self.assertRedirects(response, expected_url='/accounts/login/?next=/tickets/ticket_index/', status_code=302, target_status_code=200, fetch_redirect_response=True)
     
     #Create ticket page
-    
-    def test_ticket_index(self):
-        #Test that ticket index works and is using the correct template
-        
-        user = User.objects.create_user(username='Test', password='123password123')
-        user.save()
-        self.client.login(username='Test', password='123password123')
-        
-        page = self.client.get("/tickets/ticket_index/")
-        self.assertEqual(page.status_code, 200)
-        self.assertTemplateUsed(page, "ticket_index.html")
-    
-    def test_ticket_index_if_logged_out(self):
-        #Test that ticket index cant be accessed by logged out users
-        
-        response = self.client.get("/tickets/ticket_index/", follow=True)
-        self.assertRedirects(response, expected_url='/accounts/login/?next=/tickets/ticket_index/', status_code=302, target_status_code=200, fetch_redirect_response=True)
-    
-    
-    #Create Bug Report page
-    
-    def test_create_ticket_bug_page(self):
-        #Test that the create bug report page works and is using the correct template
+
+    def test_create_ticket(self):
+        #Test that the create ticket page works and is using the correct template
          
         user = User.objects.create_user(username='Test', password='123password123')
         user.save()
         self.client.login(username='Test', password='123password123')
         
-        page = self.client.get("/tickets/create_ticket_bug_report/")
+        page = self.client.get("/tickets/create_ticket/")
         self.assertEqual(page.status_code, 200)
-        self.assertTemplateUsed(page, "create_ticket_bug_form.html")
+        self.assertTemplateUsed(page, "create_ticket.html")
     
     def test_create_ticket_bug_if_logged_in(self):
         #Test that logged out users cant create tickets
          
-        response = self.client.get("/tickets/create_ticket_bug_report/", follow=True)
-        self.assertRedirects(response, expected_url='/accounts/login/?next=/tickets/create_ticket_bug_report/', status_code=302, target_status_code=200, fetch_redirect_response=True)
-    
-    #Create Request Feature Ticket page
-    
-    def test_create_ticket_feature_page(self):
-        #Test that the create feature request page works and is using the correct template
-         
-        user = User.objects.create_user(username='Test', password='123password123')
-        user.save()
-        self.client.login(username='Test', password='123password123')
-        
-        page = self.client.get("/tickets/create_ticket_request_feature/")
-        self.assertEqual(page.status_code, 200)
-        self.assertTemplateUsed(page, "create_ticket_bug_form.html")
-    
-    def test_create_ticket_feature_if_logged_in(self):
-        #Test that logged out users cant create tickets
-         
-        response = self.client.get("/tickets/create_ticket_request_feature/", follow=True)
-        self.assertRedirects(response, expected_url='/accounts/login/?next=/tickets/create_ticket_request_feature/', status_code=302, target_status_code=200, fetch_redirect_response=True)
+        response = self.client.get("/tickets/create_ticket/", follow=True)
+        self.assertRedirects(response, expected_url='/accounts/login/?next=/tickets/create_ticket/', status_code=302, target_status_code=200, fetch_redirect_response=True)
     
     #Ticket Detail Page
     
@@ -95,6 +58,9 @@ class TestViews(TestCase):
         
         ticket = Ticket(title='test', author=user, username=user.username, description='test', ticket_type=2, status=1, comment_num=0, upvotes=0)
         ticket.save()
+        
+        ticket_type = TicketType(ticket=ticket, ticket_type=ticket.ticket_type, match_ticket_id=ticket.id, ticket_title=ticket.title, bug_or_request='bug', value=0.00)
+        ticket_type.save()
         
         page = self.client.get("/tickets/ticket_index/view_ticket/{0}".format(ticket.id))
         self.assertEqual(page.status_code, 200)
@@ -167,6 +133,5 @@ class TestViews(TestCase):
         page = self.client.get("/tickets/ticket_index/edit_ticket/{0}".format(ticket.id))
         
         self.assertRedirects(page, expected_url=reverse('index'), status_code=302, target_status_code=200, fetch_redirect_response=True)
-    
-
+        
     

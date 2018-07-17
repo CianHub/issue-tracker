@@ -119,9 +119,11 @@ class TestViews(TestCase):
          
         user = User.objects.create_user(username='Test', first_name='test', last_name='tester', password='123password123', email='test@test.com')
         user.save()
+        
         self.client.login(username='Test', password='123password123')
         
         page = self.client.get("/accounts/profile/")
+        
         self.assertEqual(page.status_code, 200)
         self.assertTemplateUsed(page, "profile.html")
     
@@ -130,4 +132,3 @@ class TestViews(TestCase):
         
         response = self.client.get("/accounts/profile/")
         self.assertRedirects(response, expected_url='/accounts/login/?next=/accounts/profile/', status_code=302, target_status_code=200, fetch_redirect_response=True)
-    

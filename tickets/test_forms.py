@@ -17,7 +17,7 @@ class TestForms(TestCase):
         
         instance = Ticket(author=user, username=user.username, ticket_type=2, status=1, comment_num=0, upvotes=0)
         
-        form = TicketForm({'title': 'Test Ticket Title', 'description': 'Test'}, instance=instance)
+        form = TicketForm({'title': 'Test Ticket Title', 'description': 'Test', 'ticket_type': '2'}, instance=instance)
         form.save()
         
         self.assertTrue(form.is_valid())
@@ -37,10 +37,10 @@ class TestForms(TestCase):
         form2 = TicketForm({'title': 'Test title', 'description': ''}, instance=instance)
         self.assertFalse(form2.is_valid())
         
-        form3 = TicketForm({'title': 'Test title', 'description': 'Test'})
+        form3 = TicketForm({'title': 'Test title', 'description': 'Test','ticket_type': '2'})
         self.assertTrue(form3.is_valid())
         
-        form4 = TicketForm({'title': 'Test title', 'description': 'Test'}, instance=instance)
+        form4 = TicketForm({'title': 'Test title', 'description': 'Test', 'ticket_type': '2'}, instance=instance)
         self.assertTrue(form4.is_valid())
     
 # Comment Form Tests

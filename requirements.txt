@@ -1,10 +1,23 @@
 dj-database-url==0.5.0
+<<<<<<< HEAD
 Django==1.11
 django-forms-bootstrap==3.1.0
+=======
+django_forms_bootstrap
+>>>>>>> 14763ea2aeffb49bc0f66e9d81cdb4a0c688b873
 gunicorn==19.9.0
 psycopg2==2.7.5
+<<<<<<< HEAD
+=======
+
+>>>>>>> 14763ea2aeffb49bc0f66e9d81cdb4a0c688b873
 pytz==2018.5
 requests==2.2.1
 six==1.5.2
 stripe==2.0.1
+<<<<<<< HEAD
+=======
+urllib3==1.7.1
+wheel==0.24.0
+>>>>>>> 14763ea2aeffb49bc0f66e9d81cdb4a0c688b873
 whitenoise==3.3.1

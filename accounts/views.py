@@ -136,6 +136,6 @@ def profile(request):
     try:
         tickets = Ticket.objects.filter(username=request.user.username).order_by('-date_updated')[:3]
     except:
-        comments = "empty"
+        tickets = "empty"
         
     return render(request, 'profile.html', {"profile": user, 'comments':comments, 'tickets':tickets})

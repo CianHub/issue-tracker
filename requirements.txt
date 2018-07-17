@@ -2,8 +2,7 @@ SecretStorage==2.0.0
 argparse==1.2.1
 chardet==2.1.1
 colorama==0.2.5
-configobj==5.0.0
-duplicity==0.7.14
+configobj==4.7.2
 html5lib==0.999
 httplib2==0.8
 keyring==3.5

@@ -30,7 +30,7 @@ class EditUserForm(forms.ModelForm):
 class UserLogin(forms.Form):
     # Form For Logging in Users
     
-    username = forms.CharField()
+    username = forms.CharField(label="Username or Email Address")
     password = forms.CharField(widget=forms.PasswordInput)
 
 class UserRegistrationForm(UserCreationForm):

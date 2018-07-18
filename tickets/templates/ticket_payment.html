@@ -1,10 +1,16 @@
 {% extends 'base.html' %}
 {% load bootstrap_tags %}
-{% block page_title %}Create Ticket{% endblock %}
+{% block page_title %}Payment{% endblock %}
 {% block content %}
 <form method="POST" >
-    <script src="https://checkout.stripe.com/checkout.js" class="stripe-button" data-key="pk_test_IBJngGZPWdOe7DwSaWs7ExIa" data-amount="9999" data-name="Stripe.com" data-description="New Feature Request" data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
-        data-locale="auto" data-zip-code="true">
+    <script src="https://checkout.stripe.com/checkout.js" 
+    class="stripe-button" 
+    data-key="pk_test_IBJngGZPWdOe7DwSaWs7ExIa" 
+    data-amount='{{value}}'
+    data-name="Issue Tracker" 
+    data-description="{{description}}" 
+    data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
+    data-locale="auto" data-zip-code="true">
     </script>
     {% csrf_token %}
 </form>

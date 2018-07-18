@@ -113,62 +113,53 @@ def create_ticket(request, pk=None):
 @login_required
 def pay_for_ticket(request):
     # Enables the user to make the payment necessary for creating a request feature ticket
-
+    
+    value = 9999
+    description = 'New Feature Request'
+    
     # Gets Stripe secret key
     stripe.api_key = settings.STRIPE_SECRET
     
     # Gets the submitted values from the create ticket view
     ticket_val = request.session.get('ticket_val')
-    
-    # Behaviour depending on if the app in in development mode or not
-    if os.environ.get('DEVELOPMENT'):
-        server = os.environ.get('C9_HOSTNAME')
-    else:
-        server = os.environ.get('HOSTNAME')
         
-    # Ensures the page can only be accessed from submitting a valid create ticket form
-    previous_url = request.META.get('HTTP_REFERER')
-    allowed_url = ('https://' + server +  '/tickets/create_ticket/')
-
-    if str(allowed_url) == str(previous_url):
-        
-        # Processes the users payment via Stripe
-        if request.method == 'POST':
-            token = request.POST['stripeToken'] 
+    if ticket_val == None:
+        messages.success(request, 'You Do Not Have Permission To View This Page')
+        return redirect(reverse('index'))
+            
+    # Processes the users payment via Stripe
+    if request.method == 'POST':
+        token = request.POST['stripeToken'] 
     
-            try:
+        try:
                 customer = stripe.Charge.create(
-                amount=9999,
+                amount=value,
                 currency='usd',
                 description='New Feature Request',
                 source=token,
                 )
                 
-            except stripe.error.CardError:
-                    messages.error(request, "Your card was declined")
+        except stripe.error.CardError:
+                messages.error(request, "Your card was declined")
                 
-            # If the payment is successful the ticket and associated ticketype are created
-            if customer.paid:
-                    ticket = Ticket(
+        # If the payment is successful the ticket and associated ticketype are created
+        if customer.paid:
+                ticket = Ticket(
                         author=request.user, username=request.user.username, status=1, comment_num=0,
                         upvotes=0, ticket_type=1, description=ticket_val['description'], title=ticket_val['title']
                         )
-                    ticket.save()
+                ticket.save()
                 
-                    ticket_type = TicketType(ticket=ticket, ticket_type=ticket.ticket_type, match_ticket_id=ticket.id, ticket_title=ticket.title, bug_or_request='feature', value=99.99)
-                    ticket_type.save()
+                ticket_type = TicketType(ticket=ticket, ticket_type=ticket.ticket_type, match_ticket_id=ticket.id, ticket_title=ticket.title, bug_or_request='feature', value=99.99)
+                ticket_type.save()
                 
-                    messages.success(request, "Your Payment Was Successful. Your Feature Request Ticket Has Been Created.")
-                    return redirect(view_ticket, ticket.pk)
-            else:
-                messages.error(request, "Unable to take payment.")
+                messages.success(request, "Your Payment Was Successful. Your Feature Request Ticket Has Been Created.")
+                del request.session['ticket_val']
+                return redirect(view_ticket, ticket.pk)
+        else:
+            messages.error(request, "Unable to take payment.")
                 
-    # Prevents the page from being accessed if the requirements are not met           
-    else:
-        messages.success(request, 'You Do Not Have Permission To View This Page')
-        return redirect(reverse('index'))
-    
-    return render(request, 'ticket_payment.html')
+    return render(request, 'ticket_payment.html', {'value':value, 'description': description})
 
 @login_required
 def edit_ticket(request, id):
@@ -236,20 +227,18 @@ def upvote_ticket_request(request, id):
     # Gets the Stripe secret key
     stripe.api_key = settings.STRIPE_SECRET
     
-    # Behaviour depending on if the app in in development mode or not
-    if os.environ.get('DEVELOPMENT'):
-        server = os.environ.get('C9_HOSTNAME')
-    else:
-        server = os.environ.get('HOSTNAME')
-        
-    # Ensures the page can only be accessed from submitting an upvote from the specified ticket page
-    previous_url = request.META.get('HTTP_REFERER')
-    allowed_url = ('https://' + server + '/' + 'tickets/view_ticket/' + id + '?')
-
-    if str(allowed_url) == str(previous_url):
-        
-        ticket = get_object_or_404(Ticket, pk=id)
+    value = 999
+    description = 'Upvote New Feature Request'
     
+    ticket = get_object_or_404(Ticket, pk=id)
+    
+    if int(ticket.id) != int(id):
+        print(ticket.id)
+        print(id)
+        messages.success(request, 'You Do Not Have Permission To View This Page')
+        return redirect(reverse('index'))
+    
+    else:
         # Processes the users payment via Stripe    
         if request.method == 'POST':
             
@@ -257,9 +246,9 @@ def upvote_ticket_request(request, id):
     
             try:
                 customer = stripe.Charge.create(
-                amount=999,
+                amount=value,
                 currency='usd',
-                description='New feature request - upvote',
+                description='Upvote New Feature Request',
                 source=token,
                 )
                 
@@ -277,11 +266,6 @@ def upvote_ticket_request(request, id):
 
             else:
                 messages.error(request, "Unable to take payment.")
-      
-    # Prevents the page from being accessed if the requirements are not met   
-    else:
-        messages.success(request, 'You Do Not Have Permission To View This Page')
-        return redirect(reverse('index'))
         
-    return render(request, 'ticket_payment.html')
+    return render(request, 'ticket_payment.html', {'value':value, 'description': description})
 

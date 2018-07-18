@@ -33,7 +33,8 @@
                     {% else %}
                     <li><a href="{% url 'login' %}">Login</a></li>
                     <li><a href="{% url 'register' %}">Register</a></li>
-                    {% endif %} {% if user.is_staff %}
+                    {% endif %} 
+                    {% if user.is_staff %}
                     <li><a href="{% url 'user_list' %}">Users</a></li>
                     {% endif %}
                     

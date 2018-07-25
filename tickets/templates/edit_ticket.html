@@ -1,16 +1,39 @@
-{% extends 'base.html' %}
-{% load staticfiles %}
+<!-- Load Tags -->
+{% extends 'base.html' %} 
 {% load bootstrap_tags %} 
+{% load staticfiles %} 
 {% block page_title %}Edit Ticket{% endblock %} 
-{% block content %}
-    <h1>Edit Ticket</h1>
-        <div class='col-xs-6'>
-            <form method="POST">
-                {% csrf_token %} {{ form | as_bootstrap }}
-                <button type="submit" class="btn btn-default">Save Changes</button>
-            </form>
-        </div>
+{% block content %} 
+{% block head_js %}
 <script type="text/javascript" src="{% static 'js/jquery-3.3.1.js' %}"></script>
+{% endblock head_js %}
+
+<!-- Content -->
+<section class='ticket-section'>
+    <div class='container'>
+        <div class='row'>
+            <div class='col-xs-12 col-sm-6 col-md-6  '>
+                
+                <!-- Django Messages -->
+                {% if messages %}
+                    <div class=' django-messages'>
+                        {% for message in messages %} 
+                        {{ message }} 
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                
+                <h1>Edit Ticket</h1>
+                <form method="POST">
+                    {% csrf_token %} 
+                    {{ form | as_bootstrap }}
+                    <button type="submit" class="btn btn-success">Save Changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
 {% if user.is_staff == False %}
 <script type="text/javascript" src="{% static 'js/hide_status.js' %}"></script>
 {% endif %}

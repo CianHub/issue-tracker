@@ -3,10 +3,9 @@ Django==1.11
 django-forms-bootstrap==3.1.0
 gunicorn==19.9.0
 psycopg2==2.7.5
-
+chartkick==0.5.0
 pytz==2018.5
 requests==2.2.1
 six==1.5.2
 stripe==2.0.1
-
 whitenoise==3.3.1

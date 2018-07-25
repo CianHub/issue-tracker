@@ -1,0 +1,36 @@
+<!-- Load Tags -->
+{% extends 'base.html' %} 
+{% load bootstrap_tags %} 
+{% load staticfiles %} 
+{% block page_title %}Edit Comment{% endblock %} 
+{% block content %} 
+{% block head_js %}
+<script type="text/javascript" src="{% static 'js/jquery-3.3.1.js' %}"></script>
+{% endblock head_js %}
+
+<!-- Content -->
+<section class='ticket-section'>
+    <div class='container'>
+        <div class='row'>
+            <div class='col-xs-12 col-sm-6 col-md-6  '>
+                
+                <!-- Django Messages -->
+                {% if messages %}
+                    <div class=' django-messages'>
+                        {% for message in messages %} 
+                        {{ message }} 
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                
+                <h1>Edit Comment</h1>
+                <form method="POST">
+                    {% csrf_token %} 
+                    {{ form | as_bootstrap }}
+                    <button type="submit" class="btn btn-success">Save Changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

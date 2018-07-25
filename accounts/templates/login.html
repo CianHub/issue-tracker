@@ -1,15 +1,39 @@
-{% extends 'base.html' %}
-{% load bootstrap_tags %} 
+<!-- Load Tags -->
+{% extends 'base.html' %} 
 {% block page_title %}Login{% endblock %} 
-{% block content %}
-<h1>Login</h1>
-<div class='col-xs-6'>
-    <form method="POST">
-        {% csrf_token %} {{ login_form | as_bootstrap }}
-        <button type="submit" class="btn btn-default">Login</button>
-    </form>
-    <p><a href="{% url 'password_reset' %}">Forgot Your Password?</a></p>
+{% load staticfiles %} 
+{% load bootstrap_tags %} 
+{% block content %} 
+{% block head_js %}
+<script type="text/javascript" src="{% static 'js/jquery-3.3.1.js' %}"></script>
+{% endblock head_js %}
 
-</div>
+<!-- Content -->
+<section class='login-section'>
+    <div class='container'>
+        <div class='row'>
+            <div class='col-xs-12 col-sm-6 col-md-6' id='login-col'>
+                
+            <!-- Django Messages -->
+            {% if messages %}
+            <div class=' django-messages'>
+                {% for message in messages %} 
+                {{ message }} 
+                {% endfor %}
+            </div>
+            {% endif %}
+            
+                <h1 class=''>Login</h1>
+                <form method="POST">
+                    {% csrf_token %} 
+                    {{ login_form | as_bootstrap }}
+                    <button type="submit" class="btn btn-success">Login</button>
+                </form>
+                <br>
+                <p><a href="{% url 'password_reset' %}">Forgot Your Password?</a></p>
+            </div>
+        </div>
+    </div>
+</section>
+
 {% endblock %}
-

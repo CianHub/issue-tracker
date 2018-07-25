@@ -1,61 +1,134 @@
-{% extends 'base.html' %}
-{% load bootstrap_tags %}
-{% load static %}
-{% block page_title %}Users {% endblock %} 
-{% block content %}
-<h1>{{ticket.title }} </h1>
-<hr>
-<div class='col-xs-12 profile'>
-    {% if user.username == ticket.username %}
-    <form method="GET" action="{% url 'edit_ticket' ticket.id %}" name='edit'><input class='btn btn-info' type="submit" value="Edit"></form>
-    {% endif %}
-    <h3>Author:</h3>
-    <p> {{ticket.author}} </p>
-    <h3>Description :</h3>
-    <p>{{ticket.description}}</p>
-    <h3>Date Created:</h3 <p>{{ticket.date_created}}</p>
-</div>
-<div class='col-xs-12 profile'>
-    
-    <h3>Last Updated: </h3>
-    <p>{{ticket.date_updated}}</p>
+<!-- Load Tags -->
+{% extends 'base.html' %} 
+{% load bootstrap_tags %} 
+{% load staticfiles %} 
+{% block page_title %}View Ticket{% endblock %} 
+{% block content %} 
+{% block head_js %}
+<script type="text/javascript" src="{% static 'js/jquery-3.3.1.js' %}"></script>
+{% endblock head_js %}
 
-</div>
-<div class='col-xs-12'>
-    <div class='form-row'>
-        <p><i class="fa fa-thumbs-up upvotes"></i> {{ ticket.upvotes }} <i class="fa fa-comment comments"></i> {{ comments | length}}</p>
-        <hr>
-        {% if ticket.ticket_type == 2 %}
-        <form method="GET" action="{% url 'upvote_ticket' ticket.id %}" name='upvote'>
-            <button class='btn btn-success' type="submit"><i class="fa fa-thumbs-up"></i></button>
-        </form>
-        {% else %}
-        <form method="GET" action="{% url 'upvote_ticket_request' ticket.id %}" name='upvote'>
-            <button class='btn btn-success' type="submit"><i class="fa fa-thumbs-up"></i></button>
-        </form>
-        {% endif %}
+<!-- Content -->
+<section class='ticket-section'>
+    <div class='container'>
+        <div class='row'>
+            <div class='col-xs-12'>
+                
+                <!-- Django Messages -->
+                {% if messages %}
+                    <div class=' django-messages'>
+                        {% for message in messages %} {{ message }} {% endfor %}
+                    </div>
+                {% endif %}
+                
+                <h1>{{ticket.title}} </h1>
+                {% if user.username == ticket.username or user.is_staff %}
+                    <form method="GET" action="{% url 'edit_ticket' ticket.id %}" name='edit'><input class='btn btn-info' type="submit" value="Edit Ticket"></form>
+                {% endif %}
+            </div>
+            <div class='col-xs-6'>
+                <h3>Author:</h3>
+                <p> <a href="{% url 'profile' ticket.author.id %}">
+                    {{ ticket.author }}
+                </a></p>
+                <h3>Date Created:</h3> 
+                <p>{{ticket.date_created}}</p>
+            </div>
+            <div class='col-xs-6 '>
+                <h3>Description:</h3>
+                <p>{{ticket.description}}</p>
+                <h3>Last Updated: </h3>
+                <p>{{ticket.date_updated}}</p>
+            </div>
+            <div class='col-xs-12 '>
+                <p>
+                    <i class="fa fa-thumbs-up upvotes"></i> 
+                    {{ ticket.upvotes }} 
+                    <i class="fa fa-comment comments"></i> 
+                    {{ comments | length}}
+                </p>
+                
+                {% if ticket.ticket_type == 2 %}
+                
+                <form method="GET" action="{% url 'upvote_ticket' ticket.id %}" name='upvote'>
+                    <button class='btn btn-success' type="submit">
+                        <i class="fa fa-thumbs-up"></i>
+                    </button>
+                </form>
+                
+                {% else %}
+                <form method="GET" action="{% url 'upvote_ticket_request' ticket.id %}" name='upvote'>
+                    <button class='btn btn-success' type="submit">
+                        <i class="fa fa-thumbs-up"></i>
+                    </button>
+                </form>
+                
+                {% endif %}
+            </div>
+            
+            <div class='col-xs-12 comment-form'>
+                <h1>Comments:</h1>
+                <form method="POST">
+                    {% csrf_token %} 
+                    {{ form | as_bootstrap }}
+                    <button type="submit" class="btn btn-info">Post Comment</button>
+                </form>
+            </div>
+        </div>
+        <div class='row'>
+            {% for i in comments %}
+            <div class='col-xs-12 comment'>
+                <h3>Posted by 
+                    <a href="{% url 'profile' i.ticket_owner_id %}">
+                        {{i.username}}
+                    </a> 
+                </h3>
+                
+                <div id='comment-text-{{forloop.counter}}'>{{i.comment}}</div>
+                
+                {% if i.date_updated %}
+                <p>
+                    <small class='text-muted'>Last Edited On {{i.date_updated}}</small>
+                </p>
+                
+                {% else %}
+                
+                <p>
+                    <small class='text-muted'>Posted On {{i.date_created}}</small>
+                </p>
+                
+                {% endif %}
+                
+                {% if user.is_staff %}
+                <form id='edit-{{forloop.counter}}' method="GET" action="{% url 'edit_comment' i.id %}">
+                    <input class='btn btn-info' type="submit" value="Edit">
+                </form>
+                
+                <br>
+                
+                <form id='delete-{{forloop.counter}}' method="GET" action="{% url 'delete_comment' i.id %}">
+                    <input class='btn btn-danger' type="submit" value="Delete">
+                </form>
+                <br> 
+                {% elif user.username == i.username %}
+                <form id='edit-{{forloop.counter}}' method="GET" action="{% url 'edit_comment' i.id %}">
+                    <input class='btn btn-info' type="submit" value="Edit">
+                </form>
+                
+                <br>
+                
+                <form id='delete-{{forloop.counter}}' method="GET" action="{% url 'delete_comment' i.id %}">
+                    <input class='btn btn-danger' type="submit" value="Delete">
+                </form>
+                
+                <br> 
+                {% endif %}
+
+            </div>
+            
+            {% endfor %}
+        </div>
     </div>
-</div>
+</section>
 
-<div class='col-xs-12'>
-    <h1>Comments:</h1>
-    <hr>
-</div>
-<div class='col-xs-12'>
-    <form method="POST">
-        {% csrf_token %} 
-        {{ form | as_bootstrap }}
-        <button type="submit" class="btn btn-info">Post Comment</button>
-    </form>
-    <hr>
-</div>
-<hr> 
-{% for i in comments %}
-<div class='col-xs-12'>
-    <h4>Posted by {{i.username}} on {{i.date_created}}</h4>
-    <p>{{i.comment}}</p>
-    <small class='text-muted'>Lasted Edited On {{i.date_updated}}</small>
-    <hr>
-</div>
-{% endfor %}
 {% endblock %}

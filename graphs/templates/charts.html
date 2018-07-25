@@ -1,0 +1,664 @@
+<!-- Load Tags -->
+{% extends 'base.html' %} 
+{% load bootstrap_tags %} 
+{% load staticfiles %} 
+{% block page_title %}Progress{% endblock %} 
+{% block content %} 
+{% load chartkick %} 
+{% block head_js %}
+<script type="text/javascript" src="{% static 'js/jquery-3.3.1.js' %}"></script>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script type="text/javascript" src="{% static 'js/chartkick.js' %}"></script>
+{% endblock head_js %}
+
+<!-- Content -->
+<section class='graph-section'>
+    <div class='container'>
+        
+        <!-- Django Messages -->
+        {% if messages %}
+            <div class=' django-messages'>
+                {% for message in messages %} 
+                {{ message }} 
+                {% endfor %}
+            </div>
+        {% endif %}
+        
+        <h1>Progress and Information</h1>
+        <br>
+        <div class='row '>
+            <div class='col-xs-12 col-sm-6 col-md-6 '>
+                <select id="dropDownMob" class='form-control mob-select'>
+                    <option value='most-upvoted-bugs' selected>Most Upvoted Bug Report Tickets</option>
+                    <option value='most-upvoted-features' >Most Upvoted New Feature Request Tickets</option>
+                    <option value="completed_daily" >Show Completed Daily</option>
+                    <option value="completed_weekly">Show Completed Weekly</option>
+                    <option value="completed_monthly">Show Completed Monthly</option>
+                </select>
+                <select id="dropDownWeb" class='form-control web-select'>
+                    <option value='most-upvoted-tickets' >Most Upvoted Tickets</option>
+                    <option value="completed_daily" >Show Completed Daily</option>
+                    <option value="completed_weekly">Show Completed Weekly</option>
+                    <option value="completed_monthly">Show Completed Monthly</option>
+                </select>
+            </div>
+        </div>
+        <br>
+        <br>
+        <div class='row mob-select'>
+            <div>
+                <div class='col-xs-12 ' id='most-upvoted-features'>
+                    {% pie_chart chart_data with id='chart-1' height='600' 
+                    library={"title":{"text":"Most Upvoted Feature Requests"},
+                    "colors":
+                    [ 'limegreen', 'darkturquoise','goldenrod','tomato'] } %}
+                </div>
+                <div class='col-xs-12 ' id='most-upvoted-bugs'>
+                    {% pie_chart chart_data2 with id='chart-2' height='600'
+                    library={"title":
+                    {"text":"Most Upvoted Bug Reports"},
+                    "colors": [ 'limegreen', 'darkturquoise','goldenrod','tomato'
+                    ] } %}
+                </div>
+            </div>
+            <div class='col-xs-12 text-center' id='completed-time'>
+                <div id="completed_daily_mob"></div>
+                <div id="completed_weekly_mob"></div>
+                <div id="completed_monthly_mob"></div>
+            </div>
+        </div>
+        <div class='row web-select'>
+            <div id='most-upvoted-tickets'>
+                <div class='col-xs-12 col-sm-6 col-md-6'>
+                    {% pie_chart chart_data with id='chart-3' height='600'
+                    library={"title":{"text":"Most Upvoted Feature Requests"},
+                    "colors": [ 'limegreen', 'darkturquoise','goldenrod','tomato'
+                    ] }%}
+
+                </div>
+                <div class='col-xs-12 col-sm-6 col-md-6 '>
+                    {% pie_chart chart_data2 with id='chart-4' height='600'
+                    library={"title":{"text":"Most Upvoted Bug Reports"},
+                    "colors": [ 'limegreen', 'darkturquoise','goldenrod','tomato'
+                    ] } %}
+                </div>
+            </div>
+            <div class='col-xs-12 text-center' id='completed-time'>
+                <div id="completed_daily_web"></div>
+                <div id="completed_weekly_web"></div>
+                <div id="completed_monthly_web"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    $(document).ready(function() {
+   
+        if ($(window).width() >= 800) {
+            // If device is not mobile
+            
+            // Show web div and hide mobile div
+            $('.web-select').show();
+            $('.mob-select').hide();
+            
+            // Draw web graphs /w HighCharts.js
+            $(function completed_daily_web() {
+                var chart = new Highcharts.Chart({
+                    chart: {
+                        renderTo: 'completed_daily_web',
+                        type: 'pie',
+                        backgroundColor:'transparent',
+                        
+                    },
+                    plotOptions: {
+                        pie: {
+                            innerSize: '70%'
+                        }
+                    },
+                    title: {
+                        text: 'Tickets Completed Daily:',
+                        style: { 'color': 'white' }
+                      
+                    },
+                    subtitle: {
+                        text: '{{completed_daily}}',
+                        align: 'center',
+                        verticalAlign: 'middle',
+                        style: { "fontSize": "10em", 'color': 'white' },
+                        y: 15
+                    },
+                    credits: { enabled: false },
+    
+                });
+            });
+            $(function completed_weekly_web() {
+                var chart = new Highcharts.Chart({
+                    chart: {
+                        renderTo: 'completed_weekly_web',
+                        type: 'pie',
+                        backgroundColor:'transparent',
+                     
+                    },
+                    plotOptions: {
+                        pie: {
+                            innerSize: '40%'
+                        }
+                    },
+                    title: {
+                        text: 'Tickets Completed Weekly:',
+                        style: { 'color': 'white' }
+                    },
+                    subtitle: {
+                        text: '{{completed_weekly}}',
+                        align: 'center',
+                        verticalAlign: 'middle',
+                        style: { "fontSize": "10em", 'color': 'white'},
+                        y: 15
+                    },
+                    credits: { enabled: false },
+    
+                });
+            });
+            $(function completed_monthly_web() {
+                var chart = new Highcharts.Chart({
+                    chart: {
+                        renderTo: 'completed_monthly_web',
+                        type: 'pie',
+                        backgroundColor:'transparent',
+                    },
+                    plotOptions: {
+                        pie: {
+                            innerSize: '40%'
+                        }
+                    },
+                    title: {
+                        text: 'Tickets Completed Monthly:',
+                        style: { 'color': 'white' }
+                       
+                    },
+                    subtitle: {
+                        text: '{{completed_monthly}}',
+                        align: 'center',
+                        verticalAlign: 'middle',
+                        style: { "fontSize": "10em", 'color': 'white'},
+                        y: 15
+                    },
+                    credits: { enabled: false },
+    
+                });
+            });
+    
+            // Default setting for web graphs
+            $('#completed_daily_web').hide();
+            $('#completed_weekly_web').hide();
+            $('#completed_monthly_web').hide();
+            $('#most-upvoted-tickets').show();
+            
+            // Show/hide graphs based on the selection in the select box
+            $('#dropDownWeb').change(function() {
+                if ($('#dropDownWeb').val() == 'completed_daily') {
+                    $("#completed_daily_web").show();
+                    $("#completed_weekly_web").hide();
+                    $("#completed_monthly_web").hide();
+                    $("#most-upvoted-tickets").hide();
+                }
+                else if ($('#dropDownWeb').val() == 'completed_weekly') {
+                    $("#completed_weekly_web").show();
+                    $("#completed_daily_web").hide();
+                    $("#completed_monthly_web").hide();
+                    $("#most-upvoted-tickets").hide();
+                }
+                else if ($('#dropDownWeb').val() == 'completed_monthly') {
+                    $("#completed_weekly_web").hide();
+                    $("#completed_daily_web").hide();
+                    $("#completed_monthly_web").show();
+                    $("#most-upvoted-tickets").hide();
+                }
+    
+                else if ($('#dropDownWeb').val() == 'most-upvoted-tickets') {
+                    $("#completed_monthly_web").hide();
+                    $("#completed_daily_web").hide();
+                    $("#completed_weekly_web").hide();
+                    $("#most-upvoted-tickets").show();
+                }
+            })
+    
+        }
+        else {
+            
+            // Show mobile div and hide web and features div 
+            $('.web-select').hide();
+            $('.mob-select').show();
+            $('#most-upvoted-features').hide();
+            
+            // Draw mobile graphs /w HighCharts.js
+            $(function completed_daily_mob() {
+                var chart = new Highcharts.Chart({
+                    chart: {
+                        height: 300,
+                        renderTo: 'completed_daily_mob',
+                        type: 'pie',
+                       
+                        backgroundColor:'transparent',
+                    },
+                    plotOptions: {
+                        pie: {
+                            innerSize: '70%'
+                        }
+                    },
+                    title: {
+                        text: 'Tickets Completed Daily:',
+                        style: {
+                            color: 'white'
+                        }
+                    },
+                    subtitle: {
+                        text: '{{completed_daily}}',
+                        align: 'center',
+                        verticalAlign: 'middle',
+                        style: { "fontSize": "8em", 'color': 'white' },
+                        y: 15
+                    },
+                    credits: { enabled: false },
+    
+                });
+            });
+            $(function completed_weekly_mob() {
+                var chart = new Highcharts.Chart({
+                    chart: {
+                        height: 300,
+                        renderTo: 'completed_weekly_mob',
+                        type: 'pie',
+                        backgroundColor:'transparent',
+                    },
+                    plotOptions: {
+                        pie: {
+                            innerSize: '40%'
+                        }
+                    },
+                    title: {
+                        text: 'Tickets Completed Weekly:',
+                        style: {
+                            color: 'white'
+                        }
+                    },
+                    subtitle: {
+                        text: '{{completed_weekly}}',
+                        align: 'center',
+                        verticalAlign: 'middle',
+                        style: { "fontSize": "8em", 'color': 'white' },
+                        y: 15
+                    },
+                    credits: { enabled: false },
+    
+                });
+            });
+            $(function completed_monthly_mob() {
+                var chart = new Highcharts.Chart({
+                    chart: {
+                        height: 300,
+                        renderTo: 'completed_monthly_mob',
+                        type: 'pie',
+                        backgroundColor:'transparent',
+                    },
+                    plotOptions: {
+                        pie: {
+                            innerSize: '70%'
+                        }
+                    },
+                    title: {
+                        text: 'Tickets Completed Monthly:',
+                        style: {
+                            color: 'white'
+                        }
+                    },
+                    subtitle: {
+                        text: '{{completed_monthly}}',
+                        align: 'center',
+                        verticalAlign: 'middle',
+                        style: { "fontSize": "8em", 'color': 'white' },
+                        y: 15
+                    },
+                    credits: { enabled: false },
+    
+                });
+            });
+    
+            // Default setting for mobile graphs
+            $('#completed_daily_mob').hide();
+            $('#completed_weekly_mob').hide();
+            $('#most-upvoted-features').hide();
+            $('#most-upvoted-bugs').show();
+            $('#completed_monthly_mob').hide();
+            
+            // Show/hide graphs based on the selection in the select box
+            $('#dropDownMob').change(function() {
+                if ($('#dropDownMob').val() == 'completed_daily') {
+                    $("#completed_daily_mob").show();
+                    $("#completed_weekly_mob").hide();
+                    $("#completed_monthly_mob").hide();
+                    $("#most-upvoted-features").hide();
+                    $("#most-upvoted-bugs").hide();
+                }
+                else if ($('#dropDownMob').val() == 'completed_weekly') {
+                    $("#completed_weekly_mob").show();
+                    $("#completed_daily_mob").hide();
+                    $("#completed_monthly_mob").hide();
+                    $("#most-upvoted-features").hide();
+                    $("#most-upvoted-bugs").hide();
+                }
+                else if ($('#dropDownMob').val() == 'completed_monthly') {
+                    $("#completed_weekly_mob").hide();
+                    $("#completed_daily_mob").hide();
+                    $("#completed_monthly_mob").show();
+                    $("#most-upvoted-features_mob").hide();
+                    $("#most-upvoted-bugs").hide();
+                }
+                else if ($('#dropDownMob').val() == 'most-upvoted-features') {
+                    $("#completed_monthly_mob").hide();
+                    $("#completed_daily_mob").hide();
+                    $("#completed_weekly_mob").hide();
+                    $("#most-upvoted-features").show();
+                    $("#most-upvoted-bugs").hide();
+                }
+    
+                else if ($('#dropDownMob').val() == 'most-upvoted-bugs') {
+                    $("#completed_monthly_mob").hide();
+                    $("#completed_daily_mob").hide();
+                    $("#completed_weekly_mob").hide();
+                    $("#most-upvoted-features").hide();
+                    $("#most-upvoted-bugs").show();
+                }
+    
+            });
+        }
+
+        $(window).on('resize', function() {
+            // Redraw graphs on window resize
+            
+            if ($(window).width() >= 800) {
+                // If device is not mobile
+                
+                // Show web div and hide mobile div
+                $('.web-select').show();
+                $('.mob-select').hide();
+                
+                // Draw web graphs /w HighCharts.js
+                $(function completed_daily_web() {
+                    var chart = new Highcharts.Chart({
+                        chart: {
+                            renderTo: 'completed_daily_web',
+                            type: 'pie',
+                            backgroundColor:'transparent',
+                            
+                        },
+                        plotOptions: {
+                            pie: {
+                                innerSize: '70%'
+                            }
+                        },
+                        title: {
+                            text: 'Tickets Completed Daily:',
+                            style: { 'color': 'white' }
+                          
+                        },
+                        subtitle: {
+                            text: '{{completed_daily}}',
+                            align: 'center',
+                            verticalAlign: 'middle',
+                            style: { "fontSize": "10em", 'color': 'white' },
+                            y: 15
+                        },
+                        credits: { enabled: false },
+        
+                    });
+                });
+                $(function completed_weekly_web() {
+                    var chart = new Highcharts.Chart({
+                        chart: {
+                            renderTo: 'completed_weekly_web',
+                            type: 'pie',
+                            backgroundColor:'transparent',
+                         
+                        },
+                        plotOptions: {
+                            pie: {
+                                innerSize: '40%'
+                            }
+                        },
+                        title: {
+                            text: 'Tickets Completed Weekly:',
+                            style: { 'color': 'white' }
+                        },
+                        subtitle: {
+                            text: '{{completed_weekly}}',
+                            align: 'center',
+                            verticalAlign: 'middle',
+                            style: { "fontSize": "10em", 'color': 'white'},
+                            y: 15
+                        },
+                        credits: { enabled: false },
+        
+                    });
+                });
+                $(function completed_monthly_web() {
+                    var chart = new Highcharts.Chart({
+                        chart: {
+                            renderTo: 'completed_monthly_web',
+                            type: 'pie',
+                            backgroundColor:'transparent',
+                        },
+                        plotOptions: {
+                            pie: {
+                                innerSize: '40%'
+                            }
+                        },
+                        title: {
+                            text: 'Tickets Completed Monthly:',
+                            style: { 'color': 'white' }
+                           
+                        },
+                        subtitle: {
+                            text: '{{completed_monthly}}',
+                            align: 'center',
+                            verticalAlign: 'middle',
+                            style: { "fontSize": "10em", 'color': 'white'},
+                            y: 15
+                        },
+                        credits: { enabled: false },
+        
+                    });
+                });
+        
+                // Default setting for web graphs
+                $('#completed_daily_web').hide();
+                $('#completed_weekly_web').hide();
+                $('#completed_monthly_web').hide();
+                $('#most-upvoted-tickets').show();
+                
+                // Show/hide graphs based on the selection in the select box
+                $('#dropDownWeb').change(function() {
+                    if ($('#dropDownWeb').val() == 'completed_daily') {
+                        $("#completed_daily_web").show();
+                        $("#completed_weekly_web").hide();
+                        $("#completed_monthly_web").hide();
+                        $("#most-upvoted-tickets").hide();
+                    }
+                    else if ($('#dropDownWeb').val() == 'completed_weekly') {
+                        $("#completed_weekly_web").show();
+                        $("#completed_daily_web").hide();
+                        $("#completed_monthly_web").hide();
+                        $("#most-upvoted-tickets").hide();
+                    }
+                    else if ($('#dropDownWeb').val() == 'completed_monthly') {
+                        $("#completed_weekly_web").hide();
+                        $("#completed_daily_web").hide();
+                        $("#completed_monthly_web").show();
+                        $("#most-upvoted-tickets").hide();
+                    }
+        
+                    else if ($('#dropDownWeb').val() == 'most-upvoted-tickets') {
+                        $("#completed_monthly_web").hide();
+                        $("#completed_daily_web").hide();
+                        $("#completed_weekly_web").hide();
+                        $("#most-upvoted-tickets").show();
+                    }
+            })
+    
+        }
+            else {
+            
+            // Show mobile div and hide web and features div 
+            $('.web-select').hide();
+            $('.mob-select').show();
+            $('#most-upvoted-features').hide();
+            
+            // Draw mobile graphs /w HighCharts.js
+            $(function completed_daily_mob() {
+                var chart = new Highcharts.Chart({
+                    chart: {
+                        height: 300,
+                        renderTo: 'completed_daily_mob',
+                        type: 'pie',
+                       
+                        backgroundColor:'transparent',
+                    },
+                    plotOptions: {
+                        pie: {
+                            innerSize: '70%'
+                        }
+                    },
+                    title: {
+                        text: 'Tickets Completed Daily:',
+                        style: {
+                            color: 'white'
+                        }
+                    },
+                    subtitle: {
+                        text: '{{completed_daily}}',
+                        align: 'center',
+                        verticalAlign: 'middle',
+                        style: { "fontSize": "8em", 'color': 'white' },
+                        y: 15
+                    },
+                    credits: { enabled: false },
+    
+                });
+            });
+            $(function completed_weekly_mob() {
+                var chart = new Highcharts.Chart({
+                    chart: {
+                        height: 300,
+                        renderTo: 'completed_weekly_mob',
+                        type: 'pie',
+                        backgroundColor:'transparent',
+                    },
+                    plotOptions: {
+                        pie: {
+                            innerSize: '40%'
+                        }
+                    },
+                    title: {
+                        text: 'Tickets Completed Weekly:',
+                        style: {
+                            color: 'white'
+                        }
+                    },
+                    subtitle: {
+                        text: '{{completed_weekly}}',
+                        align: 'center',
+                        verticalAlign: 'middle',
+                        style: { "fontSize": "8em", 'color': 'white' },
+                        y: 15
+                    },
+                    credits: { enabled: false },
+    
+                });
+            });
+            $(function completed_monthly_mob() {
+                var chart = new Highcharts.Chart({
+                    chart: {
+                        height: 300,
+                        renderTo: 'completed_monthly_mob',
+                        type: 'pie',
+                        backgroundColor:'transparent',
+                    },
+                    plotOptions: {
+                        pie: {
+                            innerSize: '70%'
+                        }
+                    },
+                    title: {
+                        text: 'Tickets Completed Monthly:',
+                        style: {
+                            color: 'white'
+                        }
+                    },
+                    subtitle: {
+                        text: '{{completed_monthly}}',
+                        align: 'center',
+                        verticalAlign: 'middle',
+                        style: { "fontSize": "8em", 'color': 'white' },
+                        y: 15
+                    },
+                    credits: { enabled: false },
+    
+                });
+            });
+    
+            // Default setting for mobile graphs
+            $('#completed_daily_mob').hide();
+            $('#completed_weekly_mob').hide();
+            $('#most-upvoted-features').hide();
+            $('#most-upvoted-bugs').show();
+            $('#completed_monthly_mob').hide();
+            
+            // Show/hide graphs based on the selection in the select box
+            $('#dropDownMob').change(function() {
+                if ($('#dropDownMob').val() == 'completed_daily') {
+                    $("#completed_daily_mob").show();
+                    $("#completed_weekly_mob").hide();
+                    $("#completed_monthly_mob").hide();
+                    $("#most-upvoted-features").hide();
+                    $("#most-upvoted-bugs").hide();
+                }
+                else if ($('#dropDownMob').val() == 'completed_weekly') {
+                    $("#completed_weekly_mob").show();
+                    $("#completed_daily_mob").hide();
+                    $("#completed_monthly_mob").hide();
+                    $("#most-upvoted-features").hide();
+                    $("#most-upvoted-bugs").hide();
+                }
+                else if ($('#dropDownMob').val() == 'completed_monthly') {
+                    $("#completed_weekly_mob").hide();
+                    $("#completed_daily_mob").hide();
+                    $("#completed_monthly_mob").show();
+                    $("#most-upvoted-features_mob").hide();
+                    $("#most-upvoted-bugs").hide();
+                }
+                else if ($('#dropDownMob').val() == 'most-upvoted-features') {
+                    $("#completed_monthly_mob").hide();
+                    $("#completed_daily_mob").hide();
+                    $("#completed_weekly_mob").hide();
+                    $("#most-upvoted-features").show();
+                    $("#most-upvoted-bugs").hide();
+                }
+    
+                else if ($('#dropDownMob').val() == 'most-upvoted-bugs') {
+                    $("#completed_monthly_mob").hide();
+                    $("#completed_daily_mob").hide();
+                    $("#completed_weekly_mob").hide();
+                    $("#most-upvoted-features").hide();
+                    $("#most-upvoted-bugs").show();
+                }
+    
+            });
+        }
+        });
+
+    });
+    
+</script>
+
+{% endblock %}

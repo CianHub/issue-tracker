@@ -28,6 +28,7 @@ The application was developed with Django, PostgreSQL, Python3, HTML5, CSS3, Jav
 5. Setup the virtualenv instance for the project and activate the virtualenv instance 
 7. Install required packages from requirements.txt 
 8. In the CLI enter: ``` $ python manage.py runserver ```
+9. Don't forget to set your environmental variables!
 
 ## Testing
 To run tests, in the CLI enter:

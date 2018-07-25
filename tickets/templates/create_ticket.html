@@ -1,10 +1,41 @@
-{% extends 'base.html' %} {% load bootstrap_tags %} {% block page_title %}Create Ticket{% endblock %} {% block content %}
-<h1>Create Ticket</h1>
-<div class='col-xs-6'>
-    <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %} {{ form | as_bootstrap }}
-        <button type="submit" class="btn btn-default">Create Ticket</button>
-    </form>
-</div>
+<!-- Load Tags -->
+{% extends 'base.html' %} 
+{% load bootstrap_tags %} 
+{% load staticfiles %} 
+{% block page_title %}Create Ticket{% endblock %} 
+{% block content %} 
+{% block head_js %}
+<script type="text/javascript" src="{% static 'js/jquery-3.3.1.js' %}"></script>
+{% endblock head_js %}
 
+<!-- Content -->
+<section class='ticket-section'>
+    <div class='container'>
+        <div class='row'>
+            <div class='col-xs-12 col-sm-6 col-md-6  '>
+                
+                <!-- Django Messages -->
+                {% if messages %}
+                    <div class=' django-messages'>
+                    {% for message in messages %} 
+                    {{ message }} 
+                    {% endfor %}
+                    </div>
+                {% endif %}
+                
+                <h1>Create Ticket</h1>
+                <form method="POST">
+                    {% csrf_token %} 
+                    {{ form | as_bootstrap }}
+                    <br>
+                    <button type="submit" class="btn btn-success">Create Ticket</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% if user.is_staff == False %}
+<script type="text/javascript" src="{% static 'js/hide_status.js' %}"></script>
+{% endif %} 
 {% endblock %}

@@ -1,64 +1,92 @@
 {% load staticfiles %}
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
-    <title>{% block page_title %}{% endblock %}</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Great Idea - Issue Tracker">
+    <meta name="author" content="Cian O'Gralaigh">
 
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
+    <title>Great Idea</title>
 
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}" type="text/css">
+    <!-- Bootstrap Core CSS -->
+    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css"
+    integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt"
+    crossorigin="anonymous">
 
-    {% block head_js %}
+    <!-- Fonts -->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
+
+    <!-- Plugin CSS -->
+    <link href="{% static 'vendor/magnific-popup/magnific-popup.css' %}" rel="stylesheet">
+
+    <!-- Modified Theme CSS -->
+    <link href="{% static 'css/creative.css' %}" rel="stylesheet">
+ 
+    {% block head_js %} 
     {% endblock head_js %}
-
 </head>
 
-<body>
-    <div class='container'>
+<body id="page-top">
 
-        <nav class="navbar navbar-header" id='main_nav'>
+    <!-- Navigation -->
+    <nav id="mainNav" class="navbar navbar-default navbar-fixed-top" role="navigation">
+
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>  <i class="fa fa-bars"></i>
+                </button>
+                <a class="navbar-brand" href="{% url 'index' %}">Great Idea</a>
+            </div>
             
-            <a class="navbar-brand" href="{% url 'index' %}">Issue Tracker</a>
-            <div id='navbar' class='navbar-collapse collapse'>
-                <ul class="nav navbar-nav ">
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
                     {% if user.is_authenticated %}
-                    <li><a href="{% url 'ticket_index' %}">View Tickets</a></li>
-                    <li><a href="{% url 'profile' %}">Profile</a></li>
+                    
+                    {% if new %}
+                    <li><a href="{% url 'ticket_index' %}">
+                        <span class="fa-stack ">
+                        <i class="fa fa-circle update fa-stack-2x"></i>
+                        <strong class="fa-stack-1x fa-stack-text fa-inverse">{{new}}</strong>
+                        </span> View Tickets</a></li>
+                    
+                    {% else %}
+                    <li><a href="{% url 'ticket_index' %}"> View Tickets</a></li>
+                    {% endif %}
+                    <li><a href="{% url 'charts' %}">Progress</a></li>
+                    <li><a href="{% url 'profile' request.user.id %}">Profile</a></li>
                     <li><a href="{% url 'logout' %}">Logout</a></li>
-                    <li><a  href="{% url 'create_ticket' %}">Create Ticket</a></li>
-
                     {% else %}
                     <li><a href="{% url 'login' %}">Login</a></li>
                     <li><a href="{% url 'register' %}">Register</a></li>
-                    {% endif %} {% if user.is_staff %}
+                    {% endif %} 
+                    {% if user.is_staff %}
                     <li><a href="{% url 'user_list' %}">Users</a></li>
-                    {% endif %}
-                    
+                    {% endif %} 
+                    {% if user.is_authenticated %}
+                    <li><a class='' href="{% url 'create_ticket' %}">Create Ticket</a> {% endif %}</li>
                 </ul>
             </div>
-        </nav>
-</div>
-<div class='container'>
-        <div class='row'>
-            <h1>
-                {% block page_heading %}{% endblock %}
-            </h1>
-            {% if messages %}
-            <div>
-                {% for message in messages %} {{ message }} {% endfor %}
-            </div>
-            {% endif %} {% block content %}{% endblock %}
-
+            <!-- /.navbar-collapse -->
         </div>
-    </div>
+        <!-- /.container-fluid -->
+    </nav>
+    {% block content %}
+    {% endblock %}
 
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-
-    <script type="text/javascript" src="{% static 'js/jquery-3.3.1.js' %}"></script>
+    <script type="text/javascript" src="{% static 'vendor/magnific-popup/jquery.magnific-popup.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'vendor/scrollreveal/scrollreveal.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/creative.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/mob_hide.js' %}"></script>
 </body>
 
 </html>

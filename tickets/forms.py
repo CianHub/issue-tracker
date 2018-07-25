@@ -9,7 +9,7 @@ class TicketForm(forms.ModelForm):
     
     class Meta:
         model = Ticket
-        fields = ('title', 'description', 'ticket_type')
+        fields = ('title', 'description', 'ticket_type','status')
 
 class CommentForm(forms.ModelForm):
     # A form for creating a comment

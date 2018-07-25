@@ -2,7 +2,6 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
 
-# Create your models here.
 class Ticket(models.Model):
     # The model for a ticket 
     
@@ -25,7 +24,8 @@ class Ticket(models.Model):
     upvotes = models.IntegerField()
     status = models.IntegerField(choices=STATUS_CHOICES, default=1)
     date_created = models.DateTimeField(auto_now_add=True)
-    date_updated = models.DateTimeField(blank=True, null=True, default=timezone.now)
+    date_updated = models.DateTimeField(blank=True, null=True,
+    default=timezone.now)
     ticket_type = models.IntegerField(choices=TICKET_CHOICES)
 
     def __str__(self):
@@ -40,7 +40,6 @@ class TicketType(models.Model):
      ticket_title = models.CharField(max_length=200)
      value = models.DecimalField(max_digits=9, decimal_places=2)
      bug_or_request = models.CharField(max_length=7, default='bug')
-
     
      def __str__(self):
         return self.ticket_title
@@ -51,10 +50,10 @@ class Comment(models.Model):
     comment = models.TextField()
     username = models.CharField(max_length=200)
     date_created = models.DateTimeField(auto_now_add=True)
-    date_updated = models.DateTimeField(blank=True, null=True, default=timezone.now)
+    date_updated = models.DateTimeField(blank=True, null=True,
+    default=timezone.now)
     ticket = models.ForeignKey(Ticket)
     ticket_owner_id = models.IntegerField()
 
     def __str__(self):
         return self.comment 
-    

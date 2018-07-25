@@ -48,17 +48,10 @@
         <div class='row mob-select'>
             <div>
                 <div class='col-xs-12 ' id='most-upvoted-features'>
-                    {% pie_chart chart_data with id='chart-1' height='600' 
-                    library={"title":{"text":"Most Upvoted Feature Requests"},
-                    "colors":
-                    [ 'limegreen', 'darkturquoise','goldenrod','tomato'] } %}
+                    {% pie_chart chart_data with id='chart-1' height='400' library={"title":{"text":"Most Upvoted Feature Requests"}, "colors": ['limegreen','darkturquoise','goldenrod','tomato'] }%}
                 </div>
                 <div class='col-xs-12 ' id='most-upvoted-bugs'>
-                    {% pie_chart chart_data2 with id='chart-2' height='600'
-                    library={"title":
-                    {"text":"Most Upvoted Bug Reports"},
-                    "colors": [ 'limegreen', 'darkturquoise','goldenrod','tomato'
-                    ] } %}
+                    {% pie_chart chart_data2 with id='chart-2' height='400' library={"title":{"text":"Most Upvoted Bug Requests"}, "colors": ['limegreen','darkturquoise','goldenrod','tomato']  } %}
                 </div>
             </div>
             <div class='col-xs-12 text-center' id='completed-time'>
@@ -69,18 +62,16 @@
         </div>
         <div class='row web-select'>
             <div id='most-upvoted-tickets'>
+                
+
                 <div class='col-xs-12 col-sm-6 col-md-6'>
-                    {% pie_chart chart_data with id='chart-3' height='600'
-                    library={"title":{"text":"Most Upvoted Feature Requests"},
-                    "colors": [ 'limegreen', 'darkturquoise','goldenrod','tomato'
-                    ] }%}
+                    {% pie_chart chart_data with id='chart-3' height='400' library={"title":{"text":"Most Upvoted Feature Requests"}, "colors": ['limegreen','darkturquoise','goldenrod','tomato'] }%}
+                    
+                    <!-- "colors": ['limegreen','darkturquoise','goldenrod','tomato'] -->
 
                 </div>
                 <div class='col-xs-12 col-sm-6 col-md-6 '>
-                    {% pie_chart chart_data2 with id='chart-4' height='600'
-                    library={"title":{"text":"Most Upvoted Bug Reports"},
-                    "colors": [ 'limegreen', 'darkturquoise','goldenrod','tomato'
-                    ] } %}
+                    {% pie_chart chart_data2 with id='chart-4' height='400' library={"title":{"text":"Most Upvoted Bug Requests"}, "colors": ['limegreen','darkturquoise','goldenrod','tomato']  } %}
                 </div>
             </div>
             <div class='col-xs-12 text-center' id='completed-time'>

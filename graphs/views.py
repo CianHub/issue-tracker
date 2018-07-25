@@ -77,6 +77,7 @@ def charts(request):
     completed_weekly = 0
     completed_monthly = 0
     
+    
     #Check how many tickets were completed within the respective time
     for i in times:
         diff = i.date_completed - i.date_started
@@ -92,7 +93,4 @@ def charts(request):
         elif days < 30:
             completed_monthly+=1
             
-    return render(request, 'charts.html', {
-        'chart_data':chart_data, 'chart_data2': chart_data2,
-        'completed_daily': str(completed_daily), 'completed_weekly': str(
-            completed_weekly), 'completed_monthly': str(completed_monthly)})
+    return render(request, 'charts.html', {'chart_data':chart_data, 'chart_data2': chart_data2,'completed_daily': str(completed_daily), 'completed_weekly': str(completed_weekly), 'completed_monthly': str(completed_monthly)})

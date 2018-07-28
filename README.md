@@ -46,4 +46,8 @@ $ python3 manage.py test
 ```
 ## Deployment
 
-The application has been deployed to Heroku and can be viewed at: <https://issue-tracker-cian.herokuapp.com/>
+The application has been deployed to Heroku with gunicorn, Heroku postgres and environmental variables set and can be viewed at: <https://issue-tracker-cian.herokuapp.com/>
+
+## Known Bugs
+
+The console will show an error on the progress page (HighCharts error #16) due to HighCharts being defined twice on the page. This console error has no effect on the apps functionality and is due to the JS being loaded in the document head. Unfortunately due to ChartKick's requirements the JS must be loaded this way in order to function correctly.

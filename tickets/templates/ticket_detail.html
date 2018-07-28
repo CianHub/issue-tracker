@@ -107,7 +107,7 @@
                 <br>
                 
                 <form id='delete-{{forloop.counter}}' method="GET" action="{% url 'delete_comment' i.id %}">
-                    <input class='btn btn-danger' type="submit" value="Delete">
+                    <input class='btn btn-danger' type="submit" value="Delete" onclick="return confirm('Are you sure you want to permanently delete this comment?')">
                 </form>
                 <br> 
                 {% elif user.username == i.username %}
@@ -118,7 +118,7 @@
                 <br>
                 
                 <form id='delete-{{forloop.counter}}' method="GET" action="{% url 'delete_comment' i.id %}">
-                    <input class='btn btn-danger' type="submit" value="Delete">
+                    <input class='btn btn-danger' type="submit" value="Delete" onclick="return confirm('Are you sure you want to permanently delete this comment?')">
                 </form>
                 
                 <br> 

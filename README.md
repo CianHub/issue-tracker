@@ -38,6 +38,7 @@ The goal of the apps UX design was to keep everything as minimal as possible, wh
 8. In the CLI enter: ``` $ python manage.py runserver ```
 9. Set envionmental variables (see .env.example).
 
+
 ## Testing
 To run tests, in the CLI enter:
 ```

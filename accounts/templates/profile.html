@@ -10,7 +10,7 @@
 {% endblock head_js %}
 
 <!-- Content -->
-<section class='user-page'>
+<section class='content-page'>
     <div class='container'>
         <!-- Django Messages -->
         {% if messages %}
@@ -20,7 +20,6 @@
                 {% endfor %}
             </div>
         {% endif %}
-            
         <h1>{{profile.first_name}}'s Profile</h1>
         <div class='row' id='profile-mob'>
             <div class='col-xs-12' >

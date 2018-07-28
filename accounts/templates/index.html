@@ -24,7 +24,11 @@
             <h1 id="homeHeading">Great Idea</h1>
             <hr>
             <p>Our product will make every part of your life better. <br>It <strong>really</strong> is a<i> Great Idea</i>.</p>
+            {% if user.is_authenticated %}
+             <a href="{% url 'ticket_index' %}" class="btn btn-primary btn-xl page-scroll">View Tickets</a>
+            {% else %}
             <a href="{% url 'register' %}" class="btn btn-primary btn-xl page-scroll">Get Started</a>
+            {% endif %}
         </div>
     </div>
 </header>

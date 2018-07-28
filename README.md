@@ -21,7 +21,7 @@ The application has several features:
 
 ## Technologies
 
-The application was developed with Django, PostgreSQL, Python3, HTML5, CSS3, JavaScript, JQuery, HighCharts.js and Bootstrap.
+The application was developed with Django, PostgreSQL, Python3, HTML5, CSS3, JavaScript, JQuery, HighCharts.js and Bootstrap 3 (both vanilla and a heavily modified version of the free Creative template).
 
 ## Design
 

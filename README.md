@@ -1,6 +1,6 @@
 # Great Idea Issue Tracker 
 
-The Great Idea Issue Tracker is a responsive web application that allows users to create, upvote, pay for, comment on, update, view progress on, delete and read tickets containing bugs or new feature suggestions.
+The Great Idea Issue Tracker is a responsive web application that allows users to create, upvote, pay for, comment on, update, view progress on, delete and read tickets containing bugs or new feature suggestions. The app was developed as a platform from which an existing platform can be improved and a team can recieve constructive criticism and suggestions from their customers.
 
 ## Features
 
@@ -21,7 +21,11 @@ The application has several features:
 
 ## Technologies
 
-The application was developed with Django, PostgreSQL, Python3, HTML5, CSS3, JavaScript, JQuery, HighCharts.js and Bootstrap.
+The application was developed with Django, PostgreSQL, Python3, HTML5, CSS3, JavaScript, JQuery, HighCharts.js and Bootstrap 3 (both vanilla and a heavily modified version of the free Creative template).
+
+## Design
+
+The goal of the apps UX design was to keep everything as minimal as possible, while avoiding the app feeling empty and to provide quick and easy navigation for the user. The application was designed with a consistent colour palette, animation speed and layout e.g. each button has a consistent colour scheme such as blue for edit and red for delete across the app regardless of context (like a comment, a ticket or a user). Links are present where a user might instinctively look for one e.g. the title of a ticket or a username. Elements of the app were reduced for mobile users in order to provide the minimum necessary information such as in the the various tables etc due to the smaller screen space. 
 
 ## Installation
 

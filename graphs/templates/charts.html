@@ -7,14 +7,13 @@
 {% load chartkick %} 
 {% block head_js %}
 <script type="text/javascript" src="{% static 'js/jquery-3.3.1.js' %}"></script>
-<script src="https://code.highcharts.com/highcharts.js"></script>
 <script type="text/javascript" src="{% static 'js/chartkick.js' %}"></script>
+<script src="https://code.highcharts.com/highcharts.js"></script>
 {% endblock head_js %}
 
 <!-- Content -->
 <section class='graph-section'>
     <div class='container'>
-        
         <!-- Django Messages -->
         {% if messages %}
             <div class=' django-messages'>
@@ -54,7 +53,7 @@
                     {% pie_chart chart_data2 with id='chart-2' height='400' library={"title":{"text":"Most Upvoted Bug Requests"}, "colors": ['limegreen','darkturquoise','goldenrod','tomato']  } %}
                 </div>
             </div>
-            <div class='col-xs-12 text-center' id='completed-time'>
+            <div class='col-xs-12 text-center' id='completed-time-mob'>
                 <div id="completed_daily_mob"></div>
                 <div id="completed_weekly_mob"></div>
                 <div id="completed_monthly_mob"></div>
@@ -62,19 +61,14 @@
         </div>
         <div class='row web-select'>
             <div id='most-upvoted-tickets'>
-                
-
                 <div class='col-xs-12 col-sm-6 col-md-6'>
                     {% pie_chart chart_data with id='chart-3' height='400' library={"title":{"text":"Most Upvoted Feature Requests"}, "colors": ['limegreen','darkturquoise','goldenrod','tomato'] }%}
-                    
-                    <!-- "colors": ['limegreen','darkturquoise','goldenrod','tomato'] -->
-
                 </div>
                 <div class='col-xs-12 col-sm-6 col-md-6 '>
                     {% pie_chart chart_data2 with id='chart-4' height='400' library={"title":{"text":"Most Upvoted Bug Requests"}, "colors": ['limegreen','darkturquoise','goldenrod','tomato']  } %}
                 </div>
             </div>
-            <div class='col-xs-12 text-center' id='completed-time'>
+            <div class='col-xs-12 text-center' id='completed-time-web'>
                 <div id="completed_daily_web"></div>
                 <div id="completed_weekly_web"></div>
                 <div id="completed_monthly_web"></div>

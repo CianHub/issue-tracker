@@ -34,6 +34,7 @@ The application was developed with Django, PostgreSQL, Python3, HTML5, CSS3, Jav
 8. In the CLI enter: ``` $ python manage.py runserver ```
 9. Set envionmental variables (see .env.example).
 
+
 ## Testing
 To run tests, in the CLI enter:
 ```

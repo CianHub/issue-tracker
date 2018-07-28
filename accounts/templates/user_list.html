@@ -59,13 +59,16 @@
                             <td>
                                     <form method="GET" action="{% url 'profile' user.id %}"><input class='btn btn-success' type="submit" value="View User"></form>
                                 </td>
+                            
+                            {% if request.user.is_superuser %}
 
                             <td>
                                 <form method="GET" action="{% url 'edit_user' user.id %}"><input class='btn btn-info' type="submit" value="Edit User"></form>
                             </td>
                             <td>
-                                <form method="GET" action="{% url 'delete_user' user.id %}"><input class='btn btn-danger' type="submit" value="Delete User"></form>
+                                <form method="GET" action="{% url 'delete_user' user.id %}"><input class='btn btn-danger' type="submit" value="Delete User" onclick="return confirm('Are you sure you want to permanently delete this user?')"> </form>
                             </td>
+                            {% endif %}
                         </tr>
                     </tbody>
                     {% empty %}

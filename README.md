@@ -8,7 +8,7 @@ The Great Idea Issue Tracker is a responsive web application that allows users t
 
 Before beginning development on the site, several user stories were created to determine who a visitor to the site could be and what they might want from the site:
 
-- "As a user I want to be able to create tickets for bugs/features, upvote and view existing tickets, see how many hours are spent working on bugs/features per day/week/month and see what the highest voted tickets are”
+- "As a user I want to be able to create tickets for bugs/features, upvote and view existing tickets, see how many hours are spent working on bugs/features per day/week/month and see what the highest voted tickets are.”
 
 - "As a customer, I want to be able to see where my money is going and the progress being made on the project. I also want to be able to have a say on the direction of the product and see what other customers think."
 

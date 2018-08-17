@@ -24,7 +24,7 @@ Links are present where a user might instinctively look for one e.g. the title o
 
 The application has several features:
 
-1. There are 3 roles: user, staff and superuser
+1. There are 3 roles: user, staff and superuser.
 2. Users can browse the existing tickets in the database.
 2. Users can create their own tickets.
 3. Users can edit or delete their existing tickets.
@@ -34,8 +34,8 @@ The application has several features:
 7. Users can upvote or create a bug ticket for free.
 8. Users can view progress on tickets being worked on.
 9. If new tickets have been created since the users last login, the user is shown a notification upon their next login.
-10. A staff member can do all of the above plus edit/delete any ticket or comment and view the user list page
-11. A superuser can do all of the above plus edit/delete users on the user list page and promote users to staff members
+10. A staff member can do all of the above plus edit/delete any ticket or comment and view the user list page.
+11. A superuser can do all of the above plus edit/delete users on the user list page and promote users to staff members.
 
 ## Technologies Used
 
@@ -87,7 +87,7 @@ The console will show an error on the progress page (HighCharts error #16) due t
 
 The initial conceptual database schema for the app can be found in the file Great Idea - Issue Tracker_ Preliminary Planning.pdf included in this repository.
 
-A PostgreSQL database was chosen as it integrated well with Django and granted a lot of flexbility. When drawing up the schema, the aim was to keep the data as modular as possible. The other major consideration was how each table relates to each other.
+A PostgreSQL database was chosen as it integrated well with Django and granted a lot of flexibility. When drawing up the schema, the aim was to keep the data as modular as possible. The other major consideration was how each table relates to each other.
 
 For example, the user table connects to the ticket table via the author field, the ticket table connects to the ticket type table via the ticket field, the comment table connects to the ticket table via the ticket field, the ticket time table connects to the ticket field via the ticket field.
 
